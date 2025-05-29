@@ -353,10 +353,10 @@
                                 </div>  
                                
 
-                                <!-- <div class="form-group col-md-12">
-                                        <button type="button" class="btn btn-primary col-md-12" id="next_button_five">PLEASE CLICK HERE TO ATTACH / INDICATE ORGANISATIONAL STRUCTURE</button>
-                                    </div>
-                                    <div id="next_section_five" style="display: none;">
+                                <div class="form-group col-md-12">
+                                        <!-- <button type="button" class="btn btn-primary col-md-12" id="next_button_five">PLEASE CLICK HERE TO ATTACH / INDICATE ORGANISATIONAL STRUCTURE</button> -->
+                                    <!-- </div> -->
+                                    <!-- <div id="next_section_five" style="display: none;">
                                         <span class="title"><b>Please attach PDF in the space provided below the organizational structure showing your
                                         current position. In the organizational structure show especially the chain of command for your
                                         present post, indicating your position in relation to your Immediate Superior, equivalent staff
@@ -365,8 +365,8 @@
                                         under your direct supervision in brackets.</b></span>
                                         <div class="form-group col-md-12">
                                         <input type="file" required="1" class="form-control" id="organisationalStructureInput" accept="application/pdf" name="organisation_structure" size="5000000"/>
-                                    </div>
-                                </div> -->
+                                    </div> -->
+                                </div>
 
 
 
