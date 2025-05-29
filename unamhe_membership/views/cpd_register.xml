@@ -1,0 +1,185 @@
+<odoo>
+    <data>
+
+        <record model="ir.ui.view" id="cpd_register_search_form_view">
+            <field name="name">cpd.register.search.form</field>
+            <field name="model">cpd.point.register</field>
+            <field name="priority">50</field>
+            <field name="arch" type="xml">
+                <search string="CPD Register">
+                    <field name="member"/>
+                    <field name="activity"/>
+                    <field name="activity_organiser"/>
+                    <filter string="CPD Year: 2022" name="cpd_year_22" domain="[('year','=',2022)]"/>
+                    <filter string="CPD Year: 2023" name="cpd_year_23" domain="[('year','=',2023)]"/>
+                    <filter string="CPD Year: 2024" name="cpd_year_24" domain="[('year','=',2024)]"/>
+                    <filter string="CPD Year: 2025" name="cpd_year_25" domain="[('year','=',2025)]"/>
+                </search>
+            </field>
+        </record>
+
+        <record id="cpd_point_register_tree" model="ir.ui.view">
+            <field name="name">cpd.point.register.tree</field>
+            <field name="model">cpd.point.register</field>
+            <field name="arch" type="xml">
+                <tree string="CPD Register">
+                    <field name="member"/>
+                    <field name="year"/>
+                    <field name="activity"/>
+                    <field name="activity_organiser"/>
+                    <field name="points_awarded"/>
+                    <field name="activity_type"/>
+                    <field name="status"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="cpd_point_register_form" model="ir.ui.view">
+            <field name="name">cpd.point.register.form</field>
+            <field name="model">cpd.point.register</field>
+            <field name="priority" eval="8"/>
+            <field name="arch" type="xml">
+                <form string="CPD Register Form">
+                    <div class="oe_title">
+                        <h1><field name="member" readonly="1"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="year" readonly="1"/>
+                            <field name="activity_date" readonly="1"/>
+                            <field name="activity_type" readonly="1"/>
+                            <field name="activity_organiser" readonly="1"/>
+                            <field name="activity" readonly="1"/>
+                            <field name="points_awarded"/>
+                             <!-- attrs="{'readonly': [('status','=','APPROVED')]}" -->
+                            <field name="status" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="certificate" readonly="1" widget="pdf_viewer"/>
+                        </group>
+                    </group>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_cpd_point_register" model="ir.actions.act_window">
+            <field name="name">CPD Register</field>
+            <field name="res_model">cpd.point.register</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[('status','=','APPROVED')]</field>
+            <field name="context">{"create": False, "delete": False, "edit": False, "import": False, "group_by": ["member", "year"]}</field>
+            <field name="help" type="html">
+              <p>No CPD Records found.</p>
+            </field>
+        </record>
+
+        <record id="action_approve_cpd_point_register" model="ir.actions.act_window">
+            <field name="name">Pending External CPDs</field>
+            <field name="res_model">cpd.point.register</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[('status','=','PENDING-APPROVAL'), ('activity_type','=','EXTERNAL')]</field>
+            <field name="context">{"create": False, "edit": True, "delete": False, "import": True, "group_by": "member"}</field>
+            <field name="help" type="html">
+              <p>No CPD Records pending approval.</p>
+            </field>
+        </record>
+
+        <record model="ir.actions.server" id="action_cpd_point_register_approve_records">
+           <field name="name">Approve CPDs Awarded</field>
+           <field name="model_id" ref="unamhe_membership.model_cpd_point_register"/>
+           <field name="binding_model_id" ref="unamhe_membership.model_cpd_point_register"/>
+           <field name="state">code</field>
+           <field name="code">
+               action = records.action_approve_external_cpd_awards()
+           </field>
+        </record>
+
+        <record id="view_award_event_registration_tree" model="ir.ui.view">
+            <field name="name">event.registration.tree</field>
+            <field name="model">event.registration</field>
+            <field name="arch" type="xml">
+                <tree string="Registration" multi_edit="1" sample="1">
+                    <field name="create_date" optional="show" string="Registration Date"/>
+                    <!-- <field name="date_open" optional="hide"/> -->
+                    <field name="name"/>
+                    <field name="partner_id" optional="hide"/>
+                    <field name="email" optional="show"/>
+                    <field name="phone" optional="show"/>
+                    <!-- <field name="mobile" optional="hide"/> -->
+                    <field name="event_id" invisible="context.get('default_event_id')"/>
+                    <field name="event_ticket_id" domain="[('event_id', '=', event_id)]"/>
+                    <field name="state" readonly="0"/>
+                    <field name="company_id" groups="base.group_multi_company" optional="hide"/>
+                    <field name="message_needaction" invisible="1"/>
+                    <button name="action_confirm" string="Confirm"  type="object" icon="fa-check"/>
+                    <button name="action_set_done" string="Flag Attended"  type="object" icon="fa-thumbs-up" class="btn-success"/>
+                    <button name="action_cancel" string="Flag NOT Attended"  type="object" icon="fa-thumbs-down" class="btn-danger"/>
+                    <field name="activity_exception_decoration" widget="activity_exception"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="action_award_event_registration" model="ir.actions.act_window">
+            <field name="name">Award CPD Points</field>
+            <field name="res_model">event.registration</field>
+            <field name="view_mode">tree</field>
+            <field name="domain">[('state', '=', 'open')]</field>
+            <field name="context">{"create": False, "delete": False, "import": True, "group_by": "partner_id"}</field>
+            <field name="help" type="html">
+              <p>Award CPD points to event attendees.</p>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window.view" id="action_view_award_event_registration_tree">
+            <field name="sequence" eval="2"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="view_award_event_registration_tree"/>
+            <field name="act_window_id" ref="action_award_event_registration"/>
+        </record>
+
+        <record model="ir.actions.act_window.view" id="action_view_cpd_point_register_tree_view">
+            <field name="sequence" eval="2"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="cpd_point_register_tree"/>
+            <field name="act_window_id" ref="action_cpd_point_register"/>
+        </record>
+
+        <record model="ir.actions.act_window.view" id="action_view_cpd_point_register_tree">
+            <field name="sequence" eval="2"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="cpd_point_register_tree"/>
+            <field name="act_window_id" ref="action_approve_cpd_point_register"/>
+        </record>
+
+        <record model="ir.actions.act_window.view" id="action_view_cpd_point_register_form_view">
+            <field name="sequence" eval="2"/>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="cpd_point_register_form"/>
+            <field name="act_window_id" ref="action_cpd_point_register"/>
+        </record>
+
+        <record model="ir.actions.act_window.view" id="action_view_cpd_point_register_form">
+            <field name="sequence" eval="2"/>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="cpd_point_register_form"/>
+            <field name="act_window_id" ref="action_approve_cpd_point_register"/>
+        </record>
+
+        <record model="ir.actions.server" id="action_award_cpd_event_registration_records">
+           <field name="name">Awarded CPDs Points</field>
+           <field name="model_id" ref="event.model_event_registration"/>
+           <field name="binding_model_id" ref="event.model_event_registration"/>
+           <field name="state">code</field>
+           <field name="code">
+               action = records.action_internal_cpd_awards()
+           </field>
+        </record>
+
+        <menuitem name="CPDs" id="menu_cpd" parent="menu_association" sequence="50"/>
+        <menuitem name="CPD Register" id="menu_cpd_register" parent="menu_cpd" action="action_cpd_point_register" sequence="1"/>
+        <menuitem name="Internal CPD Approval" id="menu_award_event_registration" parent="menu_cpd" action="action_award_event_registration" sequence="2"/>
+        
+        <menuitem name="External CPD Approval" id="menu_pending_cpd_register" parent="menu_cpd" action="action_approve_cpd_point_register" sequence="3"/>
+
+    </data>
+</odoo>

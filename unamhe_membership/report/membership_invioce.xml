@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <report
+        id="report_unamhe_membership"
+        string="Membership Invioce"
+        model="account.move"
+        report_type="qweb-pdf"
+        name="unamhe_membership.report_unamhe"
+        file="unamhe_membership.report_unamhe"/>
+
+
+    
+
+</odoo>

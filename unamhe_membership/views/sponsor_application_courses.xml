@@ -1,0 +1,246 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <template id="my_pending_sponsor_application__menu" name="Pending Sponsorship Approvals" inherit_id="portal.portal_my_home">
+        <xpath expr="//div[hasclass('o_portal_docs')]" position="inside">
+            <t t-if="user_id.partner_id.company_type == 'company'">
+                <t t-call="portal.portal_docs_entry">
+                    <t t-set="title">Pending Approvals</t>
+                    <t t-set="url">/unamhe/sponsor-applications</t>
+                    <t t-set="placeholder_count" t-value="'sponsor_pending_approvals'"/>
+                </t>
+            </t>
+        </xpath>
+    </template>
+
+    <template id="sponsor_application_courses" name="Applications Pending Approval">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs_searchbar" t-value="True"/>
+            <t t-call="portal.portal_searchbar"><t t-set="title">Applications Pending Approval</t></t>
+
+            <div class="table-responsive border rounded border-top-0">
+                <div style="padding:15px;background-color: white !important;">
+                    <t t-if="links">
+                        <span class="section_title" style="background-color: white !important">Applications Pending Approval </span>
+
+                        <a href="javascript:getApplications('approve');">
+                            <button class="btn btn-success btn-sm">Approve</button>
+                        </a>
+                        <a href="javascript:getApplications('reject');">
+                            <button class="btn btn-danger btn-sm">Reject</button>
+                        </a>
+                    </t>
+                    <t t-else="">
+                        <span class="section_title" style="background-color: white !important">No applications are pending approval </span>
+                    </t>
+                </div>
+                <table class="table rounded mb-0 bg-white" id="pending_applications">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Application</th>
+                            <th>Fullname</th>
+                            <th>Email</th>
+                            <th>Application Date</th>
+                            <th>Details</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <t t-foreach="course_list" t-as="course">
+                            <tr>
+                                <td>
+                                    <input type="checkbox" t-att-value="'course-%s' % (course.id)" />
+                                </td>
+                                <td>
+                                    <t t-out="course.application_number"/>
+                                </td>
+                                <td>
+                                    <t t-out="course.partner_id.name"/> <t t-if="course.partner_id.membership_id">- (<t t-out="course.partner_id.membership_id"/>)</t>
+                                </td>
+                                <td>
+                                    <t t-out="course.partner_id.email"/>
+                                </td>
+                                <td>
+                                    <t t-out="course.application_date"/>
+                                </td>
+                                <td>
+                                    <t t-out="course.course_id.name"/> - (<t t-out="course.course_id.unamhe_code"/>)<br/>
+                                    <t t-if="course.subjects">
+                                        #Course Units:-<br/>
+                                        <t t-foreach="course.subjects" t-as="subject">
+                                            -<t t-out="subject.name"/> - <t t-out="subject.unamhe_code"/> -<t t-out="subject.product_id.list_price"/><br/>
+                                        </t>
+                                    </t>
+                                    <t t-if="course.course_id.course_type != 'certified'">
+                                        <t t-if="course.course_id.course_fees">
+                                            -<t t-out="course.course_id.course_fees.name"/> -<t t-out="course.course_id.course_fees.list_price"/><br/>
+                                        </t>
+                                    </t>
+                                    <t t-if="course.course_id.product_id">
+                                        -<t t-out="course.course_id.product_id.name"/> -<t t-out="course.course_id.product_id.list_price"/><br/>
+                                    </t>
+                                    <t t-if="course.course_id.cert_product_id">
+                                        -<t t-out="course.course_id.cert_product_id.name"/> -<t t-out="course.course_id.cert_product_id.list_price"/><br/>
+                                    </t>
+                                    <t t-if="not course.partner_id.membership_id">
+                                        <t t-if="member_product">
+                                             #Membership Fees:-<br/>
+                                            -<t t-out="member_product.name"/> -<t t-out="member_product.list_price"/><br/>
+                                        </t>
+                                    </t>
+                                    <t t-out="course.batch_id.name"/> intake
+                                </td>
+                                <td>
+                                    <a t-att-href="'/unamhe/approve-applications/course-%s' % (course.id)">
+                                        <button class="btn btn-success btn-sm">Approve</button>
+                                    </a>
+                                    <a t-att-href="'/unamhe/reject-applications/course-%s' % (course.id)">
+                                        <button class="btn btn-danger btn-sm">Reject</button>
+                                    </a>
+                                </td>
+                            </tr>
+                        </t>
+                        <t t-foreach="course_unit_list" t-as="course_unit">
+                            <tr>
+                                <td>
+                                    <input type="checkbox" t-att-value="'course-%s' % (course_unit.id)" />
+                                </td>
+                                <td>
+                                    <t t-out="course_unit.name"/>
+                                </td>
+                                <td>
+                                    <t t-out="course_unit.student_id.partner_id.name"/> <t t-if="course_unit.student_id.partner_id.membership_id">- (<t t-out="course_unit.student_id.partner_id.membership_id"/>)</t>
+                                </td>
+                                <td>
+                                    <t t-out="course_unit.student_id.partner_id.email"/>
+                                </td>
+                                <td>
+                                    <t t-out="course_unit.write_date"/>
+                                </td>
+                                <td>
+                                    <t t-out="course_unit.course_id.name"/> - (<t t-out="course_unit.course_id.unamhe_code"/>)<br/>
+                                    <t t-if="course_unit.subject_ids">
+                                        #Course Units:-<br/>
+                                        <t t-foreach="course_unit.subject_ids" t-as="subject">
+                                            -<t t-out="subject.name"/> - <t t-out="subject.unamhe_code"/> -<t t-out="subject.product_id.list_price"/><br/>
+                                        </t>
+                                    </t>
+                                    <t t-if="course_unit.course_id.product_id">
+                                        -<t t-out="course_unit.course_id.product_id.name"/> -<t t-out="course_unit.course_id.product_id.list_price"/><br/>
+                                    </t>
+                                    <t t-if="course_unit.student_id.partner_id.checkMemberStatus() == 'INACTIVE'">
+                                        <t t-if="member_product">
+                                             #Membership Fees:-<br/>
+                                            -<t t-out="member_product.name"/> -<t t-out="member_product.list_price"/><br/>
+                                        </t>
+                                    </t>
+                                    <t t-out="course_unit.batch_id.name"/> intake
+                                </td>
+                                <td>
+                                    <a t-att-href="'/unamhe/approve-applications/registration-%s' % (course_unit.id)">
+                                        <button class="btn btn-success btn-sm">Approve</button>
+                                    </a>
+                                    <a t-att-href="'/unamhe/reject-applications/registration-%s' % (course_unit.id)">
+                                        <button class="btn btn-danger btn-sm">Reject</button>
+                                    </a>
+                                </td>
+                            </tr>
+                        </t>
+                        <t t-foreach="membership" t-as="member">
+                            <tr>
+                                <td>
+                                    <input type="checkbox" t-att-value="'member-%s' % (member.id)" />
+                                </td>
+                                <td>
+                                    <t t-out="member.name"/>
+                                </td>
+                                <td>
+                                    <t t-out="member.member_name"/> <t t-if="member.user_id.partner_id.membership_id">- (<t t-out="member.user_id.partner_id.membership_id"/>)</t>
+                                </td>
+                                <td>
+                                    <t t-out="member.user_id.partner_id.email"/>
+                                </td>
+                                <td>
+                                    <t t-out="member.date"/>
+                                </td>
+                                <td>
+                                    <t t-out="member.product.name"/><br/>(<t t-out="member.product.list_price"/>)<br/>
+                                </td>
+                                <td>
+                                    <a t-att-href="'/unamhe/approve-applications/member-%s' % (member.id)">
+                                        <button class="btn btn-success btn-sm">Approve</button>
+                                    </a>
+                                    <a t-att-href="'/unamhe/reject-applications/member-%s' % (member.id)">
+                                        <button class="btn btn-danger btn-sm">Reject</button>
+                                    </a>
+                                </td>
+                            </tr>
+                        </t>
+                        <t t-foreach="upgrade_membership" t-as="member">
+                            <tr>
+                                <td>
+                                    <input type="checkbox" t-att-value="'upgrade-%s' % (member.id)" />
+                                </td>
+                                <td>
+                                    <t t-out="member.name"/>
+                                </td>
+                                <td>
+                                    <t t-out="member.member_name"/> <t t-if="member.user_id.partner_id.membership_id">- (<t t-out="member.user_id.partner_id.membership_id"/>)</t>
+                                </td>
+                                <td>
+                                    <t t-out="member.user_id.partner_id.email"/>
+                                </td>
+                                <td>
+                                    <t t-out="member.date"/>
+                                </td>
+                                <td>
+                                    <t t-out="member.product.name"/><br/>(<t t-out="member.product.list_price"/>)<br/>
+                                </td>
+                                <td>
+                                    <a t-att-href="'/unamhe/approve-applications/upgrade-%s' % (member.id)">
+                                        <button class="btn btn-success btn-sm">Approve</button>
+                                    </a>
+                                    <a t-att-href="'/unamhe/reject-applications/upgrade-%s' % (member.id)">
+                                        <button class="btn btn-danger btn-sm">Reject</button>
+                                    </a>
+                                </td>
+                            </tr>
+                        </t>
+                        <t t-foreach="renew_membership" t-as="member">
+                            <tr>
+                                <td>
+                                    <input type="checkbox" t-att-value="'renew-%s' % (member.id)" />
+                                </td>
+                                <td>
+                                    <t t-out="member.name"/>
+                                </td>
+                                <td>
+                                    <t t-out="member.partner_id.name"/> <t t-if="member.partner_id.membership_id">- (<t t-out="member.partner_id.membership_id"/>)</t>
+                                </td>
+                                <td>
+                                    <t t-out="member.partner_id.email"/>
+                                </td>
+                                <td>
+                                    <t t-out="member.create_date"/>
+                                </td>
+                                <td>
+                                    <t t-out="member.product.name"/><br/>(<t t-out="member.product.list_price"/>)<br/>
+                                </td>
+                                <td>
+                                    <a t-att-href="'/unamhe/approve-applications/renew-%s' % (member.id)">
+                                        <button class="btn btn-success btn-sm">Approve</button>
+                                    </a>
+                                    <a t-att-href="'/unamhe/reject-applications/renew-%s' % (member.id)">
+                                        <button class="btn btn-danger btn-sm">Reject</button>
+                                    </a>
+                                </td>
+                            </tr>
+                        </t>
+                    </tbody>
+                </table>
+            </div>
+        </t>
+    </template>
+
+</odoo>

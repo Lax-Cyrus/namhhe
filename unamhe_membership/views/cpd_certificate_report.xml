@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <template id="report_cpd_document">
+            <t t-call="web.external_layout">
+                <div class="page">
+                    <h2><span>CPD CERTIFICATE</span></h2>
+                    <div id="informations" class="row mt-4 mb-4">
+                        <div class="col-auto col-3 mw-100 mb-2" name="invoice_date">
+                            <strong>Year: </strong><br/><b t-esc="cpd_year"/>
+                        </div>
+                        <div class="col-auto col-3 mw-100 mb-2" name="origin">
+                            <strong>Name:</strong><br/><b t-esc="o.name"/>
+                        </div>
+                        <div class="col-auto col-3 mw-100 mb-2" name="customer_code">
+                            <strong>MembershipID:</strong><br/><b t-esc="o.membership_id"/>
+                        </div>
+                    </div>
+
+                    <table class="table table-sm o_main_table" name="invoice_line_table">
+                        <thead>
+                            <tr>
+                                <th name="th_activity" class="text-left"><span>Activity</span></th>
+                                <th name="th_activity_organiser" class="text-left"><span>Activity Organiser</span></th>
+                                <th name="th_points" t-attf-class="text-left {{ 'd-none d-md-table-cell' if report_type == 'html' else '' }}"><span>Points Awarded</span></th>
+                            </tr>
+                        </thead>
+                        <tbody class="invoice_tbody">
+                            <t t-foreach="cpd_lines" t-as="line">
+                                <tr>
+                                    <td class="text-left"><span t-esc="line.activity" t-options="{'widget': 'text'}"/></td>
+                                    <td class="text-left"><span t-esc="line.activity_organiser" t-options="{'widget': 'text'}"/></td>
+                                    <td t-attf-class="text-right {{ 'd-none d-md-table-cell' if report_type == 'html' else '' }}">
+                                        <span class="text-nowrap" t-esc="line.points_awarded"/>
+                                    </td>
+                                </tr>
+                            </t>
+                            <tr class="is-subtotal text-right">
+                                <td class="text-left"/>
+                                <td class="text-left"><strong class="mr16">Total Points</strong></td>
+                                <td t-attf-class="text-right {{ 'd-none d-md-table-cell' if report_type == 'html' else '' }}">
+                                    <span class="text-nowrap" t-esc="total_points_awarded"/>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <br/><br/>
+                    <p class="text-center">The Insurance Training College</p>
+                </div>
+            </t>
+        </template>
+
+
+        <template id="report_cpd_document_with_points">
+            <t t-call="web.html_container">
+                <t t-foreach="docs" t-as="o">
+                <t t-call="unamhe_membership.report_cpd_document"/>
+                </t>
+            </t>
+        </template>
+
+        <record id="unamhe_membership_cpd_report" model="ir.actions.report">
+            <field name="name">CPD Certificate</field>
+            <field name="model">res.partner</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">unamhe_membership.report_cpd_document_with_points</field>
+            <field name="report_file">unamhe_membership.report_cpd_document_with_points</field>
+            <field name="print_report_name">(CPD Report)</field>
+            <field name="attachment">(('CPD Certificate').replace('/','_')+'.pdf')</field>
+            <field name="binding_model_id" ref="unamhe_membership.model_cpd_point_register"/>
+            <field name="binding_type">report</field>
+        </record>
+
+    </data>
+</odoo>

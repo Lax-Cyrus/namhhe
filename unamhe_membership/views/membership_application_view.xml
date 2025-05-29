@@ -1,0 +1,569 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Sequence-->
+    <record id="seq_membership_application_sequence" model="ir.sequence">
+        <field name="name">Membership Application Number</field>
+        <field name="code">unamhe.membership.application</field>
+        <field name="prefix">UNAMHE-App-</field>
+        <field name="padding">3</field>
+        <field name="company_id" eval="False"/>
+    </record>
+
+    <record id="seq_membership_application_corporate_sequence" model="ir.sequence">
+        <field name="name">Membership Corporate Application Number</field>
+        <field name="code">unamhe.membership.application.2</field>
+        <field name="prefix">CMP-App-</field>
+        <field name="padding">3</field>
+        <field name="company_id" eval="False"/>
+    </record>
+
+    <!--List View-->
+    <record model="ir.ui.view" id="unamhe_membership_list_view">
+        <field name="name">Member Application List</field>
+        <field name="model">unamhe.membership.application</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="member_name"/>
+                <field name="email"/>
+                <field name="product"/>
+                <field name="sponsorship_type"/>
+                <field name="state"/>
+                <field name="invoice_status"/>
+            </tree>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="unamhe_corporate_membership_list_view">
+        <field name="name">Corporate Member Application List</field>
+        <field name="model">unamhe.membership.application</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="company_name"/>
+                <field name="company_website"/>
+                <field name="email"/>
+                <field name="corporate_product"/>
+                <field name="state"/>
+                <field name="invoice_status"/>
+            </tree>
+        </field>
+    </record>
+
+    <!--    Form View-->
+    <record id="view_application_reject_with_reason_view" model="ir.ui.view">
+        <field name="name">unamhe.membership.application.reject.reason.form</field>
+        <field name="model">unamhe.membership.application.reject.reason</field>
+        <field name="arch" type="xml">
+            <form string="Reject Application With Reason">
+                <group>
+                    <field name="reason"/>
+                    <field name="application_id" invisible="1"/>
+                </group>
+                <footer>
+                    <button string="Reject" name="reject_application_with_reason" type="object" class="btn-primary"
+                            data-hotkey="q"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel" data-hotkey="z"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_application_reject_with_reason_view" model="ir.actions.act_window">
+        <field name="name">Reject Application With Reason</field>
+        <field name="res_model">unamhe.membership.application.reject.reason</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="view_application_reject_with_reason_view"/>
+        <field name="target">new</field>
+    </record>
+
+    <record model="ir.ui.view" id="unamhe_membership_form_view">
+        <field name="name">Member Application Form</field>
+        <field name="model">unamhe.membership.application</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="send_for_approval" type="object" string="Submit"
+                            groups="unamhe_membership.group_membership_manager"/>
+                    <button name="application_approval" type="object" string="Approve"
+                            readonly="[('state','=','approve')]" groups="unamhe_membership.group_membership_head"/>
+                    <button name="%(action_application_reject_with_reason_view)d" type="action"
+                            context="{'default_application_id': active_id}" readonly="[('state','=','approve')]"
+                            string="Reject"
+                            groups="unamhe_membership.group_membership_manager,unamhe_membership.group_membership_head"/>
+                    <button name="register_member" type="object" string="Register Member"
+                            groups="unamhe_membership.group_membership_manager,unamhe_membership.group_membership_head"/>
+                    <button name="send_email_wizard" type="object" string="Send Email"
+                            groups="unamhe_membership.group_membership_manager,unamhe_membership.group_membership_head"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <field name="image_1920" widget="image" class="oe_left oe_avatar"/>
+                    <div class="oe_title">
+                        <h2>
+                            <field name="name" readonly="1"/>
+                        </h2>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="member_name" readonly="[('state','!=','draft')]"/>
+                            <field name="member_type" readonly="[('state','!=','draft')]"/>
+                            <field name="date" readonly="[('state','!=','draft')]"/>
+                        </group>
+                        <group>
+                            <field name="user_id" invisible="1"/>
+                            <field name="company_id" invisible="1"/>
+                            <field name="date_of_birth" readonly="[('state','!=','draft')]"/>
+
+                            <field name="product" readonly="[('state','!=','draft')]"/>
+                            <field name="approval_date" readonly="1"/>
+                        </group>
+                    </group>
+                    <group invisible="[('member_type','!=','person')]">
+                        <group>
+                            <field name="nationality" readonly="[('state','!=','draft')]"/>
+                            <field name="gender" readonly="[('state','!=','draft')]"/>
+                            <field name="sponsorship_type" readonly="[('state','!=','draft')]"/>
+
+                            <field name="current_employer" readonly="[('state','!=','draft')]"/>
+                            <field name="employee_address" readonly="[('state','!=','draft')]"/>
+                            <field name="insurance_qualification" readonly="[('state','!=','draft')]"/>
+                            <field name="current_position" readonly="[('state','!=','draft')]"/>
+                        </group>
+                    </group>
+                    <notebook position="inside">
+                        <page string="Assessment (Membership Cm'ttee)">
+                            <group>
+                                <group>
+                                    <field name="provisional_result"/>
+                                    <field name="class_recommended"/>
+                                    <field name="cmtee_min"/>
+                                </group>
+                                <group>
+                                    <field name="cmtee_remarks"/>
+                                    <field name="date_assessed"/>
+                                </group>
+
+                            </group>
+                        </page>
+                        <page string="Residdential Address">
+                            <group>
+                                <group>
+                                    <field name="post_addres" readonly="[('state','!=','draft')]"/>
+                                    <field name="nationality" readonly="[('state','!=','draft')]"/>
+                                    <field name="city" readonly="[('state','!=','draft')]"/>
+                                    <field name="district" readonly="[('state','!=','draft')]"/>
+                                </group>
+                                <group>
+                                    <field name="personal_email" readonly="[('state','!=','draft')]"/>
+                                    <field name="mobile_no" readonly="[('state','!=','draft')]"/>
+                                    <field name="whatsapp_no" readonly="[('state','!=','draft')]"/>
+                                </group>
+                            </group>
+                        </page>
+
+                        <page string="Employment Address">
+                            <group>
+                                <group>
+                                    <field name="home_mobile" readonly="[('state','!=','draft')]"/>
+                                    <field name="home_email" readonly="[('state','!=','draft')]"/>
+                                </group>
+                                <group>
+                                    <field name="city_work" readonly="[('state','!=','draft')]"/>
+                                    <field name="district_work" readonly="[('state','!=','draft')]"/>
+                                </group>
+
+                            </group>
+                        </page>
+                        <page string="Membership of Other Professional Organisation"
+                              name="other_professional_organisation">
+                            <group>
+                                <field name="other_professional_org_ids" widget="one2many_list">
+                                    <tree editable="bottom">
+                                        <field name="name"/>
+                                        <field name="other_starting_date"/>
+                                        <field name="other_ending_date"/>
+                                        <field name="level_membership"/>
+                                        <field name="cert_attached"/>
+                                        <field name="abbr"/>
+                                        <field name="year_qualification"/>
+                                    </tree>
+                                </field>
+                            </group>
+                        </page>
+                        <page string="Education Background" name="institutional_eduction_background">
+                            <group>
+                                <field name="institute_ids" widget="one2many_list">
+                                    <tree editable="bottom">
+                                        <field name="name" string="University / College"/>
+                                        <field name="edu_starting_date" string="Starting Year"/>
+                                        <field name="edu_ending_date" string="Ending Year"/>
+                                        <field name="qualification" string="Award / Course Title"/>
+                                        <field name="attachment_results" string="Academic Attachment"/>
+                                    </tree>
+                                    <form>
+                                        <group>
+                                            <field name="name" string="University / College"/>
+                                            <field name="edu_starting_date" string="Starting Year"/>
+                                            <field name="edu_ending_date" string="Ending Year"/>
+                                            <field name="qualification" string="Award / Course Title"/>
+                                            <field name="attachment_results" string="Academic Attachment"/>
+                                        </group>
+                                    </form>
+                                </field>
+                            </group>
+                        </page>
+
+                        <page string="Work Experience" name="employment_record">
+                            <group>
+                                <field name="employment_ids" widget="one2many_list">
+                                    <tree editable="bottom">
+                                        <field name="employer_name" string="Name of Oraganisation"/>
+                                        <field name="work_starting_date" string="Start Date"/>
+                                        <field name="work_ending_date" string="End Date"/>
+                                        <field name="desc_work" string="Description of work"/>
+                                    </tree>
+                                    <form>
+                                        <group>
+                                            <field name="employer_name" string="Name of Oraganisation"/>
+                                            <field name="work_starting_date" string="Start Date"/>
+                                            <field name="work_ending_date" string="End Date"/>
+                                            <field name="desc_work" string="Description of work"/>
+                                        </group>
+                                    </form>
+                                </field>
+                            </group>
+                        </page>
+   
+
+                    </notebook>
+                    <notebook position="inside">
+                    <page string="Other Training / Informal Training" name="other_training">
+                        <group>
+                                    <field name="other_informal_training_ids" widget="one2many_list">
+                                        <tree editable="bottom">
+                                            <field name="informal_starting_date" string="Starting Date"/>
+                                            <field name="informal_ending_date" string="Ending Date"/>
+                                            <field name="training_details" string="Details of Training"/>
+                                            <field name="employer_name" string="Name of Employer"/>
+                                            <field name="post_held" string="Post Held"/>
+                                            <field name="training_attachment" string="Training Attachment"/>
+                                        </tree>
+                                        <form>
+                                            <group>
+                                                <field name="informal_starting_date" string="Starting Date"/>
+                                                <field name="informal_ending_date" string="Ending Date"/>
+                                                <field name="training_details" string="Details of Training"/>
+                                                <field name="employer_name" string="Name of Employer"/>
+                                                <field name="post_held" string="Post Held"/>
+                                                <field name="training_attachment" string="Training Attachment"/>
+                                            </group>
+                                        </form>
+                                    </field>
+                                </group>                  
+                    
+                    </page>
+                        <page string="Proposer's Details">
+                            <group>
+                                <group>
+                                    <field name="member_proposer1"/>
+                                    <field name="email_proposer1"/>
+                                    <field name="approval1_status"/>
+
+                                </group>
+
+                            </group>
+
+                        </page>
+                        <page string="Seconder's Details">
+                            <group>
+                                <group>
+                                    <field name="member_seconder1"/>
+                                    <field name="email_seconder1"/>
+                                    <field name="approval2_status"/>
+
+                                </group>
+
+                            </group>
+
+                        </page>
+
+                        <page string="Present Appointment">
+                            <group>
+                                <field name="position_held" readonly="[('state','!=','draft')]"/>
+                                <field name="desc_duties" readonly="[('state','!=','draft')]"/>
+                            </group>
+
+                        </page>
+
+                        <!-- <page string="Attached Organisational Structure">
+                            <group>
+                                <field name="organisation_structure" readonly="[('state','!=','draft')]"/>
+
+                            </group>
+
+                        </page> -->
+                        <page string="Declaration">
+                            <group>
+                                <field name="declaration" readonly="[('state', '!=', 'draft')]"/>
+
+                            </group>
+
+                        </page>
+
+                    </notebook>
+                    <group invisible="[('state','!=','reject')]">
+                        <group string="Reject Reason">
+                            <field name="reject_reason" readonly="1"/>
+                        </group>
+                    </group>
+
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+
+    <!-- Sequence-->
+    <record id="seq_membership_upgrade_sequence" model="ir.sequence">
+        <field name="name">Members￼Let's do it
+            ￼Skip and start from scratch
+            hip Upgrade Number
+        </field>
+        <field name="code">unamhe.membership.upgrade</field>
+        <field name="prefix">UNAMHE-APG-</field>
+        <field name="padding">3</field>
+        <field name="company_id" eval="False"/>
+    </record>
+
+    <!--List View-->
+    <record model="ir.ui.view" id="unamhe_membership_upgrade_list_view">
+        <field name="name">Member Upgrade Application List</field>
+        <field name="model">unamhe.membership.upgrade</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="member_name"/>
+                <field name="date"/>
+                <field name="sponsorship_type"/>
+                <field name="state"/>
+                <field name="invoice_status"/>
+            </tree>
+        </field>
+    </record>
+
+
+    <!--Form View-->
+    <record id="view_upgrade_reject_with_reason_view" model="ir.ui.view">
+        <field name="name">unamhe.membership.upgrade.reject.reason.form</field>
+        <field name="model">unamhe.membership.upgrade.reject.reason</field>
+        <field name="arch" type="xml">
+            <form string="Reject Upgrade With Reason">
+                <group>
+                    <field name="reason"/>
+                    <field name="upgrade_id" invisible="1"/>
+                </group>
+                <footer>
+                    <button string="Reject" name="reject_upgrade_with_reason" type="object" class="btn-primary"
+                            data-hotkey="q"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel" data-hotkey="z"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_upgrade_reject_with_reason_view" model="ir.actions.act_window">
+        <field name="name">Reject Upgrade With Reason</field>
+        <field name="res_model">unamhe.membership.upgrade.reject.reason</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="view_upgrade_reject_with_reason_view"/>
+        <field name="target">new</field>
+    </record>
+
+    <record model="ir.ui.view" id="unamhe_membership_upgrade_form_view">
+        <field name="name">Member Upgrade Application Form</field>
+        <field name="model">unamhe.membership.upgrade</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="submit_btn" type="object" string="Submit" invisible="[('state','not in',['draft'])]"
+                            groups="unamhe_membership.group_membership_manager"/>
+                    <button name="approve_btn" type="object" string="Approve" readonly="[('state','=','approve')]"
+                            groups="unamhe_membership.group_membership_head"/>
+                    <button name="%(action_upgrade_reject_with_reason_view)d" type="action"
+                            context="{'default_upgrade_id': active_id}" readonly="[('state','=','approve')]"
+                            string="Reject"
+                            groups="unamhe_membership.group_membership_manager,unamhe_membership.group_membership_head"/>
+                    <button name="upgrade_btn" type="object" string="Upgrade Membership"
+                            invisible="[('state','not in',['approved','sponsor_approve'])]"
+                            groups="unamhe_membership.group_membership_manager,unamhe_membership.group_membership_head"/>
+                    <button name="send_email_wizard" type="object" string="Send Email"
+                            groups="unamhe_membership.group_membership_manager,unamhe_membership.group_membership_head"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h2>
+                            <field name="name" readonly="1"/>
+                        </h2>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="member_name" readonly="[('state','!=','draft')]"/>
+                            <field name="date" readonly="[('state','!=','draft')]"/>
+                            <field name="user_id" invisible="1"/>
+                        </group>
+                        <group>
+
+                            <field name="member_type" readonly="[('state','!=','draft')]"/>
+                        </group>
+                    </group>
+
+                    <group>
+                        <p>
+                            <b>Membership Details</b>
+                        </p>
+                        <br/>
+                        <group colspan="12">
+                            <group>
+                                <field string="Current" name="current_product" readonly="[('state','!=','draft')]"/>
+                            </group>
+                            <group>
+                                <field string="Upgrading to" name="product" readonly="[('state','!=','draft')]"/>
+                            </group>
+                        </group>
+                    </group>
+                    <group invisible="[('state','!=','reject')]">
+                        <group string="Reject Reason">
+                            <field name="reject_reason" readonly="1"/>
+                        </group>
+                    </group>
+
+                    <notebook position="inside">
+                        <page string="Admission and Upgrade Details" name="personal_data">
+                            <group>
+                                <group colspan="12">
+                                    <group>
+                                        <field name="admitted"/>
+                                        <field name="date_admitted"/>
+                                    </group>
+                                    <group>
+                                        <field name="council_min"/>
+                                        <field name="remarks"/>
+                                    </group>
+                                </group>
+
+
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+
+    <!-- Sequence-->
+    <record id="seq_membership_renewal_sequence" model="ir.sequence">
+        <field name="name">Membership Renew Number</field>
+        <field name="code">unamhe.membership.renewal</field>
+        <field name="prefix">UNAMHE-RNW-</field>
+        <field name="padding">3</field>
+        <field name="company_id" eval="False"/>
+    </record>
+
+    <!--List View-->
+    <record model="ir.ui.view" id="unamhe_membership_renewal_list_view">
+        <field name="name">Member Renewal List</field>
+        <field name="model">unamhe.membership.renewal</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="partner_id"/>
+                <field name="create_date"/>
+                <field name="year"/>
+                <field name="state"/>
+                <field name="invoice_status"/>
+            </tree>
+        </field>
+    </record>
+
+
+    <!--List View-->
+    <record model="ir.ui.view" id="unamhe_membership_renewal_form_view">
+        <field name="name">Member Renewal Form</field>
+        <field name="model">unamhe.membership.renewal</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="approve_renawal" type="object"
+                            invisible="[('state','not in',['draft','sponsor_approve'])]" string="Confirm"
+                            groups="unamhe_membership.group_membership_manager,unamhe_membership.group_membership_head"/>
+                    <button name="confirm_renawal" type="object" readonly="[('state','=','approve')]" string="Renew"
+                            groups="unamhe_membership.group_membership_manager,unamhe_membership.group_membership_head"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h2>
+                            <field name="name" readonly="1"/>
+                        </h2>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="partner_id"/>
+                            <field name="sponsorship_type"/>
+                        </group>
+                        <group>
+                            <field name="create_date"/>
+                            <field name="year"/>
+                            <field name="sponsor" string="Sponsor" invisible="[('sponsorship_type','=', 'self')]"/>
+                        </group>
+                    </group>
+                </sheet>
+
+            </form>
+        </field>
+    </record>
+
+    <!--    Action and menu item-->
+    <record model="ir.actions.act_window" id="unamhe_membership_application_action">
+        <field name="name">Membership Applications</field>
+        <field name="res_model">unamhe.membership.application</field>
+        <field name="domain">[('member_type','=','person')]</field>
+        <field name="view_id" ref="unamhe_membership_list_view"/>
+        <field name="context">{"group_by": ['state']}</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <record model="ir.actions.act_window" id="unamhe_company_membership_application_action">
+        <field name="name">Corporate Applications</field>
+        <field name="res_model">unamhe.membership.application</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[('member_type','=','company')]</field>
+        <field name="context">{"group_by": ['state']}</field>
+        <field name="view_id" ref="unamhe_corporate_membership_list_view"/>
+    </record>
+
+    <record model="ir.actions.act_window" id="unamhe_members_upgrade_action">
+        <field name="name">Memberships Upgrade application</field>
+        <field name="res_model">unamhe.membership.upgrade</field>
+        <field name="view_mode">tree,form</field>
+        <field name="context">{"group_by": ['state']}</field>
+    </record>
+
+    <record model="ir.actions.act_window" id="unamhe_members_renewal_action">
+        <field name="name">Memberships Renewal application</field>
+        <field name="res_model">unamhe.membership.renewal</field>
+        <field name="view_mode">tree,form</field>
+        <field name="context">{"group_by": ['state']}</field>
+    </record>
+
+    <menuitem id="main_application_menu" parent="menu_association" name="Applications" sequence="1"/>
+    <menuitem id="unamhe_membership_menu_menu" action="unamhe_members_upgrade_action" parent="main_application_menu"/>
+    <menuitem id="unamhe_membership_application_menu" action="unamhe_membership_application_action"
+              parent="main_application_menu"/>
+    <menuitem id="unamhe_renewal_application_menu" action="unamhe_members_renewal_action"
+              parent="main_application_menu"/>
+
+</odoo>

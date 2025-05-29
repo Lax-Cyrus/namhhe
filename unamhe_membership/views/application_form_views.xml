@@ -1,0 +1,74 @@
+<odoo>
+    <!-- Region Form and Tree Views -->
+    <record id="view_region_form" model="ir.ui.view">
+        <field name="name">unamhe.cities.form</field>
+        <field name="model">unamhe.cities</field>
+        <field name="arch" type="xml">
+            <form string="Cities">
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="district_ids" widget="one2many_list" options="{'no_create': True}">
+                            <tree string="Districts">
+                                <field name="name"/>
+                            </tree>
+                        </field>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_region_tree" model="ir.ui.view">
+        <field name="name">unamhe.cities.tree</field>
+        <field name="model">unamhe.cities</field>
+        <field name="arch" type="xml">
+            <tree string="Cities">
+                <field name="name"/>
+            </tree>
+        </field>
+    </record>
+
+
+    <record id="action_view_regions" model="ir.actions.act_window">
+        <field name="name">Citiess</field>
+        <field name="res_model">unamhe.cities</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <!-- District Form and Tree Views -->
+    <record id="view_district_form" model="ir.ui.view">
+        <field name="name">unamhe.district.form</field>
+        <field name="model">unamhe.district</field>
+        <field name="arch" type="xml">
+            <form string="District">
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="city_id"/>
+
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_district_tree" model="ir.ui.view">
+        <field name="name">unamhe.district.tree</field>
+        <field name="model">unamhe.district</field>
+        <field name="arch" type="xml">
+            <tree string="Districts">
+                <field name="name"/>
+                <field name="city_id"/>
+            </tree>
+        </field>
+    </record>
+
+
+    <record id="action_view_district" model="ir.actions.act_window">
+        <field name="name">Districts</field>
+        <field name="res_model">unamhe.district</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+</odoo>

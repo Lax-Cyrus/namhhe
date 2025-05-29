@@ -1,0 +1,284 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="unamhe_member_application_notification_email" model="mail.template">
+        <field name="name">unamhe Membership: Application Received</field>
+        <field name="model_id" ref="unamhe_membership.model_unamhe_membership_application"/>
+        <field name="email_from">{{object.user_id.company_id.email}}</field>
+        <field name="email_to">{{object.email}}</field>
+        <field name="subject">unamhe Membership: {{object.member_name}} Application Received</field>
+        <field name="body_html" type="html">
+            <div style="margin:0px;padding:0px;">
+                <p style="margin:0px;padding:0px;font-size:14px;">
+                    Hello
+                    <t t-out="object.member_name"/>
+                    ,
+                    <br/>
+                    <br/>
+                    This is to acknowledge that we have received your application dated
+                    <strong>
+                        <t t-out="object.create_date"/>
+                    </strong>
+                    in which you requested to be considered for membership.
+                </p>
+                <p>
+                    Yours sincerely,
+                    <br/>
+                    <strong>
+                        <t t-out="object.user_id.company_id.name"/>
+                    </strong>
+                </p>
+            </div>
+        </field>
+    </record>
+
+    <record id="unamhe_member_application_approved_email" model="mail.template">
+        <field name="name">unamhe Membership: Application Approved</field>
+        <field name="model_id" ref="unamhe_membership.model_unamhe_membership_application"/>
+        <field name="email_from">{{object.user_id.company_id.email}}</field>
+        <field name="email_to">{{object.email}}</field>
+        <field name="subject">unamhe Membership: {{object.member_name}} Application Approved</field>
+        <field name="body_html" type="html">
+            <div style="margin:0px;padding:0px;">
+                <p style="margin:0px;padding:0px;font-size:14px;">
+                    Hello
+                    <t t-out="object.member_name"/>
+                    ,
+                    <br/>
+                    <br/>
+                    We are delighted to inform you that your application for membership at unamhe was approved. Your membership number is <t t-out="object.user_id.partner_id.membership_id"/>.
+
+                    <br/><br/>From now on, your username is your membership number. Going forward, you will use this, along with your password, to access your Membership portal.
+
+                    <br/><br/>Feel free to explore the various benefits and resources available to you as an unamhe member.
+
+                    <br/><br/>If you have any questions or need assistance, please don't hesitate to reach out to the unamhe Membership Department.
+
+                    <br/><br/>Welcome aboard!
+
+                    <br/><br/>Best regards,
+                    <br/>unamhe Membership Department
+                    <br/>
+                    <strong>
+                        <t t-out="object.user_id.company_id.name"/>
+                    </strong>
+                </p>
+            </div>
+        </field>
+    </record>
+
+    <record id="unamhe_member_application_only_approved_email" model="mail.template">
+        <field name="name">unamhe Membership: Application Approved</field>
+        <field name="model_id" ref="unamhe_membership.model_unamhe_membership_application"/>
+        <field name="email_from">{{object.user_id.company_id.email}}</field>
+        <field name="email_to">{{object.email}}</field>
+        <field name="subject">unamhe Membership: {{object.member_name}} Application Approved, Proceed to make payment</field>
+        <field name="body_html" type="html">
+            <div style="margin:0px;padding:0px;">
+                <p style="margin:0px;padding:0px;font-size:14px;">
+                    Hello
+                    <t t-out="object.member_name"/>
+                    ,
+                    <br/>
+                    <br/>
+                    We are delighted to inform you that your application for <t t-out="object.product.name" t-if="object.product"/><t t-out="object.corporate_product.name" t-if="object.corporate_product"/> membership at unamhe was approved.
+
+                    <br/><br/>Please proceed to confirm your invoice and make the payment by following the link provided below.
+
+                    <br/><br/>Invoice link: <t t-att-value="'%s/my/invoices/' % (object.publicDomain())"/>
+
+                    <br/><br/>If you have any questions or require assistance, please feel free to reach out to the unamhe Membership Department.
+
+                    <br/><br/>Best regards,
+                    <br/>unamhe Membership Department
+                    <br/>
+                    <strong>
+                        <t t-out="object.user_id.company_id.name"/>
+                    </strong>
+                </p>
+            </div>
+        </field>
+    </record>
+
+    <record id="unamhe_member_application_rejected_email" model="mail.template">
+        <field name="name">unamhe Membership: Application Rejected</field>
+        <field name="model_id" ref="unamhe_membership.model_unamhe_membership_application"/>
+        <field name="email_from">{{object.user_id.company_id.email}}</field>
+        <field name="email_to">{{object.email}}</field>
+        <field name="subject">unamhe Membership: {{object.member_name}} Application Rejected</field>
+        <field name="body_html" type="html">
+            <div style="margin:0px;padding:0px;">
+                <p style="margin:0px;padding:0px;font-size:14px;">
+                    Hello
+                    <t t-out="object.member_name"/>
+                    ,
+                    <br/>
+                    <br/>
+                    This is to inform you that we received your application dated
+                    <strong>
+                        <t t-out="object.create_date"/>
+                    </strong>
+                    in which you requested to be considered for membership. However, we regret to inform you that your application has been rejected.<br/><br/>
+                    <b>Reason:</b> <t t-out="object.reject_reason"/>
+                </p>
+                <p>
+                    Yours sincerely,
+                    <br/>
+                    <strong>
+                        <t t-out="object.user_id.company_id.name"/>
+                    </strong>
+                </p>
+            </div>
+        </field>
+    </record>
+
+    <record id="unamhe_member_upgrade_rejected_email" model="mail.template">
+        <field name="name">unamhe Membership: Upgrade Rejected</field>
+        <field name="model_id" ref="unamhe_membership.model_unamhe_membership_upgrade"/>
+        <field name="email_from">{{object.user_id.company_id.email}}</field>
+        <field name="email_to">{{object.user_id.partner_id.email}}</field>
+        <field name="subject">unamhe Membership: {{object.member_name}} Upgrade Application Rejected</field>
+        <field name="body_html" type="html">
+            <div style="margin:0px;padding:0px;">
+                <p style="margin:0px;padding:0px;font-size:14px;">
+                    Hello
+                    <t t-out="object.member_name"/>
+                    ,
+                    <br/>
+                    <br/>
+                    This is to inform you that we received your application dated
+                    <strong>
+                        <t t-out="object.create_date"/>
+                    </strong>
+                    in which you requested to be considered for membership upgrade. However, we regret to inform you that your application has been rejected.<br/><br/>
+                    <b>Reason:</b> <t t-out="object.reject_reason"/>
+                </p>
+                <p>
+                    Yours sincerely,
+                    <br/>
+                    <strong>
+                        <t t-out="object.user_id.company_id.name"/>
+                    </strong>
+                </p>
+            </div>
+        </field>
+    </record>
+
+    <record id="unamhe_member_upgrade_success_email" model="mail.template">
+        <field name="name">unamhe Membership: Upgrade Successful</field>
+        <field name="model_id" ref="unamhe_membership.model_unamhe_membership_upgrade"/>
+        <field name="email_from">{{object.user_id.company_id.email}}</field>
+        <field name="email_to">{{object.user_id.partner_id.email}}</field>
+        <field name="subject">unamhe Membership: {{object.member_name}} Upgrade Successful</field>
+        <field name="body_html" type="html">
+            <div style="margin:0px;padding:0px;">
+                <p style="margin:0px;padding:0px;font-size:14px;">
+                    Hello
+                    <t t-out="object.member_name"/> (<t t-out="object.user_id.partner_id.membership_id"/>)
+                    ,
+                    <br/><br/>Exciting news! We are pleased to notify you that your application for professional upgrade has been reviewed. The College considered your application for the designation of <b t-out="object.user_id.partner_id.product.name"/> at unamhe.
+
+                    <br/><br/>You will be officially awarded you Designation of <b t-out="object.user_id.partner_id.product.name"/>, a Certificate and an Official Badge at a date that will be communicated to you.
+
+                    <br/><br/>If you have any questions or need assistance, please don't hesitate to reach out to the unamhe Membership Department.
+
+                    <br/><br/>Welcome aboard!
+
+                    <br/><br/>Best regards,
+                    <br/>unamhe Membership Department
+                    <br/>
+                    <strong>
+                        <t t-out="object.user_id.company_id.name"/>
+                    </strong>
+                </p>
+            </div>
+        </field>
+    </record>
+
+    <record id="unamhe_member_renewal_success_email" model="mail.template">
+        <field name="name">unamhe Membership: Renewal Successful</field>
+        <field name="model_id" ref="unamhe_membership.model_unamhe_membership_renewal"/>
+        <field name="email_from">{{object.partner_id.company_id.email}}</field>
+        <field name="email_to">{{object.partner_id.email}}</field>
+        <field name="subject">unamhe Membership: {{object.partner_id.name}} Renewal Successful</field>
+        <field name="body_html" type="html">
+            <div style="margin:0px;padding:0px;">
+                <p style="margin:0px;padding:0px;font-size:14px;">
+                    Hello
+                    <t t-out="object.partner_id.name"/> (<t t-out="object.partner_id.membership_id"/>)
+                    ,
+                    <br/><br/>Exciting news! Your membership at unamhe has been successfully renewed, providing you renewed access to various benefits and opportunities.
+
+                    <br/><br/>Feel free to explore the various benefits and resources available to you as an unamhe member.
+
+                    <br/><br/>If you have any questions or need assistance, please don't hesitate to reach out to the unamhe Membership Department.
+
+                    <br/><br/>Welcome aboard!
+
+                    <br/><br/>Best regards,
+                    <br/>unamhe Membership Department
+                    <br/>
+                    <strong>
+                        <t t-out="object.partner_id.company_id.name"/>
+                    </strong>
+                </p>
+            </div>
+        </field>
+    </record>
+
+
+<!--    <record id="unamhe_membership_sponsor_template_email" model="mail.template">-->
+<!--        <field name="name">unamhe Membership: Upgrade Rejected</field>-->
+<!--        <field name="model_id" ref="unamhe_membership.model_unamhe_membership_upgrade"/>-->
+<!--        <field name="email_from">{{object.user_id.company_id.email}}</field>-->
+<!--        <field name="email_to">{{object.user_id.partner_id.email}}</field>-->
+<!--        <field name="subject">unamhe Membership: Request for Sponsorship Approval - Membership and Academic Programs</field>-->
+<!--        <field name="body_html" type="html">-->
+<!--            <div style="margin:0px;padding:0px;">-->
+<!--                <p style="margin:0px;padding:0px;font-size:12px;">-->
+<!--                    Dear-->
+<!--                    <t t-out="object.member_name"/>-->
+<!--                    ,-->
+<!--                </p>-->
+<!--                <br/>-->
+<!--                <br/>-->
+<!--                <p style="margin:0px;padding:0px;font-size:12px;">Warm greetings from the Insurance Training College.</p>-->
+<!--                <br/>-->
+<!--                <p style="margin:0px;padding:0px;font-size:12px;">-->
+<!--                    We trust this message finds you well. We are excited to share that several students/members have applied for membership and academic programs at our colleges, and they have listed you as their esteemed sponsor. Here are the details of the applications:-->
+<!--                </p>-->
+<!--                <br/>-->
+<!--                <p style="margin:0px;padding:0px;font-size:12px;">-->
+<!--                    <table>-->
+<!--                        <tr>-->
+<!--                            <th>Applicant</th>-->
+<!--                            <th>Application Details</th>-->
+<!--                        </tr>-->
+<!--                        <t t-foreach="product_corporate" t-as="application">-->
+<!--                            <tr>-->
+<!--                                <th>application['fullname']</th>-->
+<!--                                <th>application['details']</th>-->
+<!--                            </tr>-->
+<!--                        </t>-->
+<!--                    </table>-->
+<!--                    <br/>-->
+<!--                </p>-->
+<!--                <p style="margin:0px;padding:0px;font-size:12px;">-->
+<!--                    We kindly request you to visit our platform and approve the above sponsorship requests. Your support is instrumental in facilitating their educational journeys, and we appreciate your commitment to their growth.-->
+<!--                </p>-->
+<!--                <br/>-->
+<!--                <p style="margin:0px;padding:0px;font-size:12px;">-->
+<!--                    Should you have any questions or need further information, please feel free to reach out.-->
+<!--                </p>-->
+<!--                <br/>-->
+<!--                <br/>-->
+<!--                <p style="margin:0px;padding:0px;font-size:12px;">-->
+<!--                    With kind regards,-->
+<!--                </p>-->
+<!--                <p style="margin:0px;padding:0px;font-size:12px;">-->
+<!--                    <strong>The Insurance Training Collage.</strong>-->
+<!--                </p>-->
+<!--            </div>-->
+<!--        </field>-->
+<!--    </record>-->
+
+</odoo>

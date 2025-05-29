@@ -1,0 +1,22 @@
+<odoo>
+
+    <menuitem id="menu_location_hierarchy"
+              name="Location Hierarchy"
+              parent="menu_marketing_config_association"
+    />
+
+    <!-- Cities Menu -->
+    <menuitem id="menu_region"
+              name="Cities"
+              parent="menu_location_hierarchy"
+              action="action_view_regions"
+    />
+
+    <!-- District Menu -->
+    <menuitem id="menu_district"
+              name="Districts"
+              parent="menu_location_hierarchy"
+              action="action_view_district"
+    />
+
+</odoo>

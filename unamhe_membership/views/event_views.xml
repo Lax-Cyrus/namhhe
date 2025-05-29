@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo><data>
+    <!-- EVENT.EVENT -->
+    <record id="inherited_view_event_form" model="ir.ui.view">
+        <field name="name">inherited.event.event.view.from</field>
+        <field name="model">event.event</field>
+        <field name="inherit_id" ref="event.view_event_form"/>
+        <field name="arch" type="xml">
+            <field name="tag_ids" position="after">
+                <field name="event_category"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="inherited_event_event_view_form_quick_create" model="ir.ui.view">
+        <field name="name">inherited.event.event.form.quick_create</field>
+        <field name="model">event.event</field>
+        <field name="inherit_id" ref="event.event_event_view_form_quick_create"/>
+        <field name="arch" type="xml">
+            <field name="name" position="after">
+                <field name="event_category"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="inherited_view_event_tree" model="ir.ui.view">
+        <field name="name">inherited.event.event.view.tree</field>
+        <field name="model">event.event</field>
+        <field name="inherit_id" ref="event.view_event_tree"/>
+        <field name="arch" type="xml">
+            <field name="name" position="after">
+                <field name="event_category"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="inherited_view_event_kanban" model="ir.ui.view">
+        <field name="name">inherited.event.event.view.kanban</field>
+        <field name="model">event.event</field>
+        <field name="inherit_id" ref="event.view_event_kanban"/>
+        <field name="arch" type="xml">
+            <field name="name" position="after">
+                <field name="event_category"/>
+            </field>
+        </field>
+    </record>
+
+    <!-- EVENT.TYPE.TICKET -->
+    <record id="event_type_ticket_view_tree_from_type" model="ir.ui.view">
+        <field name="name">event.type.ticket.view.tree.inherit.sale</field>
+        <field name="model">event.type.ticket</field>
+        <field name="inherit_id" ref="event.event_type_ticket_view_tree_from_type"/>
+        <field name="arch" type="xml">
+            <field name="price" position="before">
+                <field name="discount_members"/>
+            </field>
+            <field name="price" position="after">
+                <field name="cpd_points"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="event_type_ticket_view_form_from_type" model="ir.ui.view">
+        <field name="name">event.type.ticket.view.form.inherit.sale</field>
+        <field name="model">event.type.ticket</field>
+        <field name="inherit_id" ref="event.event_type_ticket_view_form_from_type"/>
+        <field name="arch" type="xml">
+            <field name="price" position="before">
+                <field name="discount_members"/>
+            </field>
+            <field name="price" position="after">
+                <field name="cpd_points"/>
+            </field>
+        </field>
+    </record>
+
+    <!-- EVENT.TICKET -->
+    <record id="event_event_ticket_view_tree_from_event" model="ir.ui.view">
+        <field name="name">event.event.ticket.view.tree.from.event.inherit.sale</field>
+        <field name="model">event.event.ticket</field>
+        <field name="inherit_id" ref="event.event_event_ticket_view_tree_from_event"/>
+        <field name="arch" type="xml">
+            <field name="price" position="before">
+                <field name="discount_members"/>
+            </field>
+            <field name="price" position="after">
+                <field name="cpd_points"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="event_event_ticket_view_form_from_event" model="ir.ui.view">
+        <field name="name">event.event.ticket.view.form.from.event.inherit.sale</field>
+        <field name="model">event.event.ticket</field>
+        <field name="inherit_id" ref="event.event_event_ticket_view_form_from_event"/>
+        <field name="arch" type="xml">
+            <field name="price" position="before">
+                <field name="discount_members"/>
+            </field>
+            <field name="price" position="after">
+                <field name="cpd_points"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="event_event_ticket_view_kanban_from_event" model="ir.ui.view">
+        <field name="name">event.event.ticket.view.kanban.from.event</field>
+        <field name="model">event.event.ticket</field>
+        <field name="inherit_id" ref="event.event_event_ticket_view_kanban_from_event"/>
+        <field name="arch" type="xml">
+            <field name="price" position="after">
+                <field name="cpd_points"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="event_event_ticket_form_view" model="ir.ui.view">
+        <field name="name">event.event.ticket.view.form.inherit.sale</field>
+        <field name="model">event.event.ticket</field>
+        <field name="inherit_id" ref="event.event_event_ticket_form_view"/>
+        <field name="arch" type="xml">
+            <field name="price" position="before">
+                <field name="discount_members"/>
+            </field>
+            <field name="price" position="after">
+                <field name="cpd_points"/>
+            </field>
+        </field>
+    </record>
+</data></odoo>

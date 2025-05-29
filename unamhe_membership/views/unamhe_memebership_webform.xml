@@ -1,0 +1,1095 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+
+    <template id="unamhe_membership_form" name="Membership Registration">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs_searchbar" t-value="True"/>
+            <t t-call="portal.portal_searchbar">
+                <t t-set="title">Membership Registration</t>
+            </t>
+            <div style="padding:15px;background-color: white !important;">
+                <span class="section_title" style="background-color: white !important">Membership Registration</span>
+            </div>
+            <div id="wrap" class="oe_structure oe_empty">
+                <div class="container">
+                    <div class="col-md-8">
+                        <form role="form" action="/unamhe/registration-success" method="post"
+                              enctype="multipart/form-data">
+                            <div class="form-group col-md-12">
+                                <div t-if="error" class="alert alert-danger" role="alert">
+                                    <t t-raw="error"/>
+                                </div>
+                            </div>
+                            <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                            <div class="form-group col-md-12">
+                                <label>Member Type</label>
+                                <select id="member_type_selection" name="member_type" class="form-control link-style">
+                                    <option value="person">Individual</option>
+                                </select>
+                            </div>
+
+                            <!-- Individual Section-->
+                            <section id="individual_section" style="margin-top:1-px">
+                               <div class="row">
+
+                                <div class="form-group col-md-12">
+                                    <label id="sponsorship_type_label_1">Sponsorship Type *</label>
+                                    <select name="sponsorship_type" id="sponsorship_type"
+                                            class="form-control link-style" required="required">
+                                        <option value="self">Self Sponsorship</option>
+                                    </select> 
+                                </div>
+                                <div class="form-group col-md-12">
+                                    <button type="button" class="btn btn-primary col-md-12" id="next_but">PERSONAL DETAILS</button>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label for="member_name">Names *</label>
+                                    <input type="text" id="name1" name="member_name" t-att-value="username" class="form-control" required="required"/>
+
+                                    <label for="email1">Email *</label>
+                                    <input type="email" id="email1" name="email" t-att-value="email" class="form-control" required="required"/>
+
+                                    <label for="date_of_birth">Date of Birth *</label>
+                                    <input type="date" id="date_of_birth" name="date_of_birth" class="form-control" required="required"/>
+
+                                    <label id="employee_job_title">Job Title *</label>
+                                    <input type="text" id="job_title" class="form-control" name="job_title" required="required"/>
+
+                                    <label for="mobile_no">Mobile Number </label>
+                                    <input type="text" id="mobile_no_label" name="mobile_no" class="form-control"/>
+
+                                    <label for="gender1">Gender *</label>
+                                    <select name="gender" id="gender1" class="form-control" required="required">
+                                        <option value="">Select</option>
+                                        <option value="male">Male</option>
+                                        <option value="female">Female</option>                                                                
+                                    </select>
+                                </div>
+
+                                <div class="form-group col-md-6">
+                                    <label for="whatsapp_no">Whatsapp Number *</label>
+                                    <input type="text" id="whatsapp_no_label" name="whatsapp_no" class="form-control"/>
+    
+                                    <label for="post_addres">Postal Address </label>
+                                    <input type="text" id="postal_address" name="post_addres" class="form-control"/>
+
+                                    <label id="public_service_grades">Public Service Grade (where applicable) </label>
+                                            <input type="text" id="public_service_grade" class="form-control" name="public_service_grade"/>
+
+                                    <label for="nationality">Nationality *</label>
+                                    <select id="nationality" name="nationality" class="form-control" required="required">
+                                        <t t-foreach="nationality" t-as="country">
+                                            <option value=""/>
+                                            <option t-att-value="country.id"><t t-esc="country.name"/></option>
+                                        </t>
+                                    </select>
+
+                                    <label for="city">City *</label>
+                                    <select id="city" name="city" class="form-control" required="required">
+                                        <t t-foreach="city" t-as="cities">
+                                            <option value=""/>
+                                            <option t-att-value="cities.id"><t t-esc="cities.name"/></option>
+                                        </t>
+                                    </select>
+
+                                    <label for="district">District *</label>
+                                    <select id="district" name="district" class="form-control" required="required">
+                                        <t t-foreach="district" t-as="districts">
+                                            <option value=""/>
+                                            <option t-att-value="districts.id"><t t-esc="districts.name"/></option>
+                                        </t>
+                                    </select>
+                                </div>
+                               
+                                <div class="form-group col-md-12">
+
+                                            <label id="display_image_label">Upload your Passport Photo *</label>
+                                            <input id="passportPhotoInput" type="file" name="image_1920" accept="image/png,image/jpg,image/jpeg"  size="1000000" required="required"/>
+                                </div>
+
+
+                                <div class="form-group col-md-12">
+                                    <button type="button" class="btn btn-primary col-md-12" id="next_but">EMPLOYMENT ADDRESS </button>
+                                </div>
+                                <div class="form-group col-md-6">
+                                            
+
+                                            <label id="city_work">City *</label>
+                                            <select id="city_work" name="city_work" class="form-control" required="required">
+                                                <t t-foreach="city" t-as="work_cities">
+                                                    <option value=""/>
+                                                    <option t-att-value="work_cities.id"><t t-esc="work_cities.name"/></option>
+                                                </t>
+                                            </select>
+
+                                            <label for="district_work">District *</label>
+                                            <select id="district_work" name="district_work" class="form-control" required="required">
+                                                <t t-foreach="district" t-as="district_work">
+                                                    <option value=""/>
+                                                    <option t-att-value="district_work.id"><t t-esc="district_work.name"/></option>
+                                                </t>
+                                            </select>
+
+                                            <label id="date_assessed">Date Assesed *</label>
+                                            <input type="date" class="form-control" name="date_assessed" id="date_assessed" required="required"/>
+                                        </div>
+                                        <div class="form-group col-md-6">
+                                            <label id="individual_home_email">Work Email </label>
+                                            <input type="email" id="home_email" class="form-control" name="home_email"  placeholder="Email"/>
+
+                                            <label id="mobile_label">Work Mobile </label>
+                                            <input type="text" class="form-control" name="home_mobile" id="home_mobile" placeholder="mobile"/>
+                                           
+                                            
+                                        </div>
+
+                                <div class="form-group col-md-12">
+                                    <button type="button" class="btn btn-primary col-md-12" id="next_button">PLEASE CLICK HERE TO ADD MEMBERSHIP OF OTHER PROFESSIONAL ORGANISATION</button>
+                                </div>
+                                <div id="next_section" style="display: none;">
+                                    <p><b>Membership of Other Professional Organisations</b></p>
+                                    <p>Please indicate membership of other Institutions/Societies e.g. UIPE</p>
+                                    <div id="membershipFields">
+                                        <div class="row membership-group">
+                                            <div class="form-group col-md-12">
+                                                <button type="button" id="addMembershipButton" class="btn btn-primary mt-3">Click Here to Add More</button>
+                                                
+                                            </div>
+                                            <div class="form-group col-md-4">
+                                                <label for="other_starting_date">Starting Date *</label>
+                                                <input type="date" id="other_starting_date" name="org_start_date[]" class="form-control" required="required"/>
+                                            </div>
+
+                                            <div class="form-group col-md-4">
+                                                <label for="other_ending_date">Ending Date *</label>
+                                                <input type="date" id="other_ending_date" name="org_end_date[]" class="form-control" required="required"/>
+                                            </div>
+
+                                            <div class="form-group col-md-4">
+                                                <label for="name">Name of Organisation *</label>
+                                                <input type="text" id="name" name="org_name[]" class="form-control"/>
+                                            </div>
+
+                                            <div class="form-group col-md-4">
+                                                <label for="abbr">Abbreviation *</label>
+                                                <input type="text" id="abbr_label" name="abbr[]" class="form-control"/>
+                                            </div>
+
+                                            <div class="form-group col-md-4">
+                                                <label for="year_qualification">Year of 1st Qualification *</label>
+                                                <input type="text" id="year_qualification_label" name="year_qualification[]" class="form-control"/>
+                                            </div>
+
+                                            <div class="form-group col-md-12">
+                                                <label for="cert_attached">Attachment Certificate *</label>
+                                                <input type="file"  class="form-control" id="cert_attached_label" accept="application/pdf" name="cert_attached[]" size="5000000"/>
+                                            </div> 
+                                            
+                                            <div class="form-group col-md-12">
+                                                <label for="level_membership">Level of Membership *</label>
+                                                <input type="text" id="level_membership" name="org_level[]" class="form-control"/>
+                                            </div>                                       
+                                        </div>                                  
+                                    
+                                    </div>
+                                </div>
+
+                                
+                                <div class="form-group col-md-12">
+                                    <button type="button" class="btn btn-primary col-md-12" id="next_button_one">PLEASE CLICK HERE TO ADD EDUCATIONAL QUALIFICATIONS</button>
+                                </div>
+                                <div id="next_section_one" style="display: none;">
+                                     <div id="instituteFields">
+                                    
+                                    <div class="row institute-group">
+                                    <div class="form-group col-md-12">
+                                        <button type="button" id="addInstituteButton" class="btn btn-primary mt-3">Click Here to Add More</button>
+                                    </div>
+
+                                        <div class="form-group col-md-4">
+                                            <label for="edu_starting_date">From *</label>
+                                            <input type="date" id="edu_starting_date" name="edu_starting_date[]" class="form-control" required="required"/>
+                                        </div>
+
+
+                                        <div class="form-group col-md-4">
+                                            <label for="edu_ending_date">To *</label>
+                                            <input type="date" id="edu_ending_date" name="edu_ending_date[]" class="form-control" required="required"/>
+                                        </div>
+
+                                        <div class="form-group col-md-4">
+                                            <label for="name">University / College *</label>
+                                            <input type="text" id="name" name="name_institute[]" class="form-control" required="required"/>
+                                        </div>
+                                        
+                                        <div class="form-group col-md-12">
+                                            <label for="qualification1">Award / Course Title *</label>
+                                            <input type="text" id="qualification1" name="qualification[]" class="form-control" required="required"/>
+                                        </div>
+
+                                        <div class="form-group col-md-12">
+                                            <label for="attachment_results">Academic Attachments *</label>
+                                             <input type="file"  class="form-control" id="attachment_results_label" accept="application/pdf" name="attachment_results[]" size="5000000"/>
+                                        </div>                                    
+
+                                        
+                                        
+                                    </div>  
+                                </div>                                
+                                </div> 
+                                </div>
+
+                                
+
+                                <div class="form-group col-md-12">
+                                    <button type="button" class="btn btn-primary col-md-12" id="next_button_two">PLEASE CLICK HERE TO ADD OTHER TRAINING / INFORMAL TRAINING</button>
+                                </div>
+                                <div id="next_section_two" style="display: none;">
+                                    <div class="details training">
+                                        <p><b>Other Training / Informal Training.</b></p>
+                                        <p>Official evidence (photocopies) of Certificates obtained must accompany this form.
+                                            Photocopies should be endorsed by your Proposer as true copy of the original document(s).</p>
+
+                                        <div id="trainingFields">
+                                    
+                                            <div class="row training-group">
+                                                <div class="form-group col-md-12">
+                                                    <button type="button" id="addTrainingButton" class="btn btn-primary mt-3">Click Here to Add More </button>
+                                                </div>
+
+                                                <div class="form-group col-md-3">
+                                                    <label for="informal_starting_date">Starting Date *</label>
+                                                    <input type="date" id="informal_starting_date" name="informal_start_date[]" class="form-control"/>
+                                                </div>
+
+                                                <div class="form-group col-md-4">
+                                                    <label for="informal_ending_date">Ending Date *</label>
+                                                    <input type="date" id="informal_ending_date" name="informal_end_date[]" class="form-control"/>
+                                                </div>
+
+                                                <div class="form-group col-md-4">
+                                                    <label for="training_details">Details of Training Program *</label>
+                                                    <input type="text" id="training_details" name="training_details[]" class="form-control"/>
+                                                </div>
+                                                
+                                                <div class="form-group col-md-12">
+                                                    <label for="employer_name">Employer *</label>
+                                                    <input type="text" id="employer_name" name="employer_name_informal[]" class="form-control"/>
+                                                </div>
+
+                                                <div class="form-group col-md-12">
+                                                    <label for="post_held">Post Held *</label>
+                                                    <input type="text" id="post_held" name="post_held[]" class="form-control"/>
+                                                </div>
+
+                                                <div class="form-group col-md-12">
+                                                    <label for="training_attachment">Training Attachments *</label>
+                                                    <input type="file"  class="form-control" id="trainingAttachmentInput" accept="application/pdf" name="training_attachment[]" size="5000000"/>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    
+                                    </div>
+                                </div>  
+                             
+
+
+                                <div class="form-group col-md-12">
+                                    <button type="button" class="btn btn-primary col-md-12" id="next_button_three">PLEASE CLICK HERE TO ADD WORK EXPERIENCE</button>
+                                </div>
+                                <div id="next_section_three" style="display: none;">
+                                    <div id="employmentFields">
+                                    <!-- Initial Institute Fields -->
+                                        <div class="row employment-group">
+                                            <div class="form-group col-md-12">
+                                                <button type="button" id="addEmploymentButton" class="btn btn-primary mt-3">Click Here to Add More</button>
+                                            </div>
+
+                                            <div class="form-group col-md-4">
+                                                <label for="work_starting_date">From (Yr.) *</label>
+                                                <input type="date" id="work_starting_date" name="work_starting_date[]" class="form-control"/>
+                                            </div>
+
+                                            <div class="form-group col-md-4">
+                                                <label for="work_ending_date">To (Yr.) *</label>
+                                                <input type="date" id="work_ending_date" name="work_ending_date[]" class="form-control"/>
+                                            </div>                                        
+                                            
+                                            <div class="form-group col-md-4">
+                                                <label for="employer_name">Name of Organisation *</label>
+                                                <input type="text" id="employer_name" name="employer_name[]" class="form-control"/>
+                                            </div>
+
+                                            <div class="form-group col-md-12">
+                                                <label for="desc_work">Description of work *</label>
+                                                <input type="text" id="desc_work" name="desc_work[]" class="form-control"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                
+                                </div>
+                              
+
+                                <div class="form-group col-md-12">
+                                    <button type="button" class="btn btn-primary col-md-12" id="next_button_four">PLEASE CLICK HERE TO ADD PRESENT APPOINTMENT</button>
+                                </div>
+                                <div id="next_section_four" style="display: none;">
+                                <span class="title"><b>Present Appointment</b></span>
+                                <div class="row">
+                                <div class="form-group col-md-6">
+                                <label id="individual_position_held">Positon Held </label>
+                                    <input type="text" id="position_held" class="form-control" name="position_held"
+                                          />
+
+                                </div>
+                                <div class="form-group col-md-6">
+                                <label id="individual_desc_duties">Description of duties </label>
+                                    <input type="text" id="desc_duties" class="form-control" name="desc_duties"
+                                           />
+                                </div>
+                                
+                                </div>
+                                </div>  
+                               
+
+                                <!-- <div class="form-group col-md-12">
+                                        <button type="button" class="btn btn-primary col-md-12" id="next_button_five">PLEASE CLICK HERE TO ATTACH / INDICATE ORGANISATIONAL STRUCTURE</button>
+                                    </div>
+                                    <div id="next_section_five" style="display: none;">
+                                        <span class="title"><b>Please attach PDF in the space provided below the organizational structure showing your
+                                        current position. In the organizational structure show especially the chain of command for your
+                                        present post, indicating your position in relation to your Immediate Superior, equivalent staff
+                                        and junior staff. Against each post indicate the name and qualifications of the current holder.
+                                        Your position should be marked by the sign (…) i.e. an arrow and the number of persons
+                                        under your direct supervision in brackets.</b></span>
+                                        <div class="form-group col-md-12">
+                                        <input type="file" required="1" class="form-control" id="organisationalStructureInput" accept="application/pdf" name="organisation_structure" size="5000000"/>
+                                    </div>
+                                </div> -->
+
+
+
+                                <div class="form-group col-md-12">
+                                    <button type="button" class="btn btn-primary col-md-12" id="next_button_six">PLEASE CLICK HERE TO ADD DECLARATION</button>
+                                </div>
+                                <div id="next_section_six" style="display: none;">
+                                <span class="title"><b>Declaration</b></span>
+                                <div class="form-group col-md-12">
+                                    <label id="individual_declaration">Declaration *</label>
+                                    <input type="text" required="1" id="declaration" class="form-control" name="declaration"
+                                           />
+                                </div>
+                                <span class="title"><b>Proposer and Seconder Information *</b></span>
+                                <div class="form-group col-md-12">
+                                    <label id="proposer2_individual_selection_label">Proposer 1 *</label>
+                                    <select name="member_proposer1" id="proposer_selection" onchange="hideOptionsForProposer(this.value);"
+                                                class="form-control link-style">
+                                            <option value="">Select</option>
+                                            <t t-foreach="member_proposer1_individual" t-as="proposer">
+                                                <option t-att-value="proposer.id">
+                                                    <span t-esc="proposer.name"/>
+                                                </option>
+                                            </t>
+                                        </select>
+                                </div>
+
+                                
+                                    
+                                <div class="form-group col-md-12">
+                                    <label id="seconder1_individual_selection_label">Seconder 1 *</label>
+                                        <select name="member_seconder1" id="seconder1_selection" onchange="hideOptionsForSeconder1(this.value);"
+                                                class="form-control link-style">
+                                            <option value="">Select</option>
+                                            <t t-foreach="member_seconder1_individual" t-as="seconder">
+                                                <option t-att-value="seconder.id">
+                                                    <span t-esc="seconder.name"/>
+                                                </option>
+                                            </t>
+                                        </select>
+                                </div>
+                                <div class="form-group col-md-12">
+                                      <label id="individual_selection_label">Membership Category *</label>
+                                      <select name="product" id="individual_selection" class="form-control link-style">
+                                          <option value=""/>
+                                          <t t-foreach="product_individual" t-as="product">
+                                              <option t-att-value="product.id">
+                                                  <span t-esc="product.name"/>-(
+                                                  <span t-esc="product.list_price"/>
+                                                  <span style="font-weight:bold;" t-esc="product.currency_id.name"/>)
+                                              </option>
+                                          </t>
+                                      </select>
+                                  </div>
+                                <div class="form-group col-md-12">
+                                    <button type="submit" class="btn btn-primary mb16 mt16 col-md-12">Apply</button>
+                                </div>                                
+                                </div>   
+                            </section>
+                           
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </t>
+
+     <script>
+                                document.getElementById('addInstituteButton').addEventListener('click', function() {
+                                    // Get the institute fields container
+                                    const instituteFields = document.getElementById('instituteFields');
+
+                                    // Create a new set of fields
+                                    const newInstituteGroup = document.createElement('div');
+                                    newInstituteGroup.classList.add('row', 'institute-group');
+
+                                    newInstituteGroup.innerHTML = `
+                                        <div class="form-group col-md-4">
+                                            <label for="edu_starting_date">From *</label>
+                                            <input type="date" id="edu_starting_date" name="edu_starting_date[]" class="form-control"/>
+                                        </div>
+
+
+                                        <div class="form-group col-md-4">
+                                            <label for="edu_ending_date">To *</label>
+                                            <input type="date" id="edu_ending_date" name="edu_ending_date[]" class="form-control"/>
+                                        </div>
+
+                                        <div class="form-group col-md-4">
+                                            <label for="name">University / College *</label>
+                                            <input type="text" id="name" name="name_institute[]" class="form-control"/>
+                                        </div>
+                                        
+                                        <div class="form-group col-md-4">
+                                            <label for="qualification1">Award / Course Title *</label>
+                                            <input type="text" id="qualification1" name="qualification[]" class="form-control"/>
+                                        </div>
+
+                                        <div class="form-group col-md-12">
+                                            <label for="attachment_results">Academic Attachments *</label>
+                                             <input type="file"  class="form-control" id="attachment_results_label" accept="application/pdf" name="attachment_results[]" size="5000000"/>
+                                        </div> 
+                                    `;
+
+                                    // Append the new set of fields to the form
+                                    instituteFields.appendChild(newInstituteGroup);
+                                });
+                            </script>
+
+                            <script>
+                                function hideOptionsForProposer(proposer_selection) {
+                                    if (proposer_selection !== '') {
+                                        var selectElements = ['seconder1_selection'];
+                                        selectElements.forEach(function(elementId) {
+                                            $('#' + elementId + ' option[value="' + proposer_selection + '"]').hide();
+                                        });
+                                    }
+                                }
+                            </script>
+
+                            <script>
+                                function hideOptionsForSeconder1(seconder1_selection) {
+                                    if (seconder1_selection !== '') {
+                                        var selectElements = ['proposer_selection'];
+                                        selectElements.forEach(function(elementId) {
+                                            $('#' + elementId + ' option[value="' + seconder1_selection + '"]').hide();
+                                        });
+                                    }
+                                }
+                            </script>
+
+                            <script>
+                                document.getElementById('addEmploymentButton').addEventListener('click', function() {
+                                    // Get the employment fields container
+                                    const employmentFields = document.getElementById('employmentFields');
+
+                                    // Create a new set of fields
+                                    const newEmploymentGroup = document.createElement('div');
+                                    newEmploymentGroup.classList.add('row', 'employment-group');
+
+                                    newEmploymentGroup.innerHTML = `
+                                        <div class="form-group col-md-6">
+                                            <label for="work_starting_date">From (Yr.) *</label>
+                                            <input type="date" id="work_starting_date" name="work_starting_date[]" class="form-control"/>
+                                        </div>
+
+                                        <div class="form-group col-md-6">
+                                            <label for="work_ending_date">To (Yr.) *</label>
+                                            <input type="date" id="work_ending_date" name="work_ending_date[]" class="form-control"/>
+                                        </div>                                        
+                                        
+                                        <div class="form-group col-md-6">
+                                            <label for="employer_name">Name of Organisation *</label>
+                                            <input type="text" id="employer_name" name="employer_name[]" class="form-control"/>
+                                        </div>
+
+                                        <div class="form-group col-md-12">
+                                            <label for="desc_work">Description of work *</label>
+                                            <input type="text" id="desc_work" name="desc_work[]" class="form-control"/>
+                                        </div>
+                                    `;
+
+                                    // Append the new set of fields to the form
+                                    employmentFields.appendChild(newEmploymentGroup);
+                                });
+                            </script>
+
+
+
+
+                            <script>
+                                document.getElementById('addMembershipButton').addEventListener('click', function() {
+                                    // Get the membership fields container
+                                    const membershipFields = document.getElementById('membershipFields');
+
+                                    // Create a new set of fields
+                                    const newMembershipGroup = document.createElement('div');
+                                    newMembershipGroup.classList.add('row', 'membership-group');
+
+                                    newMembershipGroup.innerHTML = `
+                                            <div class="form-group col-md-4">
+                                                <label for="other_starting_date">Starting Date *</label>
+                                                <input type="date" id="other_starting_date" name="org_start_date[]" class="form-control"/>
+                                            </div>
+
+                                            <div class="form-group col-md-4">
+                                                <label for="other_ending_date">Ending Date *</label>
+                                                <input type="date" id="other_ending_date" name="org_end_date[]" class="form-control"/>
+                                            </div>
+
+                                            <div class="form-group col-md-4">
+                                                <label for="name">Name of Organisation *</label>
+                                                <input type="text" id="name" name="org_name[]" class="form-control"/>
+                                            </div>
+
+
+                                            <div class="form-group col-md-4">
+                                                <label for="abbr">Abbreviation *</label>
+                                                <input type="text" id="abbr_label" name="abbr[]" class="form-control"/>
+                                            </div>
+
+                                            <div class="form-group col-md-4">
+                                                <label for="year_qualification">Year of 1st Qualification *</label>
+                                                <input type="text" id="year_qualification_label" name="year_qualification[]" class="form-control"/>
+                                            </div>
+
+                                            <div class="form-group col-md-12">
+                                                <label for="cert_attached">Attachment Certificate *</label>
+                                                <input type="file"  class="form-control" id="cert_attached_label" accept="application/pdf" name="cert_attached[]" size="5000000"/>
+                                            </div> 
+                                            
+                                            <div class="form-group col-md-4">
+                                                <label for="level_membership">Level of Membership *</label>
+                                                <input type="text" id="level_membership" name="org_level[]" class="form-control"/>
+                                            </div> 
+                                    `;
+
+                                    // Append the new set of fields to the form
+                                    membershipFields.appendChild(newMembershipGroup);
+                                });
+                            </script>
+
+
+
+                            <script>
+                                document.getElementById('addTrainingButton').addEventListener('click', function() {
+                                    // Get the training fields container
+                                    const trainingFields = document.getElementById('trainingFields');
+
+                                    // Create a new set of fields
+                                    const newTrainingGroup = document.createElement('div');
+                                    newTrainingGroup.classList.add('row', 'training-group');
+
+                                    newTrainingGroup.innerHTML = `
+                                        <div class="form-group col-md-4">
+                                            <label for="informal_starting_date">Starting Date *</label>
+                                            <input type="date" id="informal_starting_date" name="informal_start_date[]" class="form-control"/>
+                                        </div>
+
+                                        <div class="form-group col-md-4">
+                                            <label for="informal_ending_date">Ending Date *</label>
+                                            <input type="date" id="informal_ending_date" name="informal_end_date[]" class="form-control"/>
+                                        </div>
+
+                                        <div class="form-group col-md-4">
+                                            <label for="training_details">Details of Training Program *</label>
+                                            <input type="text" id="training_details" name="training_details[]" class="form-control"/>
+                                        </div>
+                                        
+                                        <div class="form-group col-md-4">
+                                            <label for="employer_name">Name of Employer *</label>
+                                            <input type="text" id="employer_name" name="employer_name_informal[]" class="form-control"/>
+                                        </div>
+
+                                        <div class="form-group col-md-12">
+                                            <label for="post_held">Post Held *</label>
+                                            <input type="text" id="post_held" name="post_held[]" class="form-control"/>
+                                        </div>
+
+                                        <div class="form-group col-md-12">
+                                            <label for="training_attachment">Training Attachments *</label>
+                                             <input type="file"  class="form-control" id="trainingAttachmentInput" accept="application/pdf" name="training_attachment[]" size="5000000"/>
+                                        </div>
+                                    `;
+
+                                    // Append the new set of fields to the form
+                                    trainingFields.appendChild(newTrainingGroup);
+                                });
+                            </script>
+
+        <script>
+            document.getElementById('next_button').addEventListener('click', function() {
+                document.getElementById('next_section').style.display = 'none';
+                document.getElementById('next_section').style.display = 'block';
+            });
+
+            document.getElementById('next_button_one').addEventListener('click', function() {
+                document.getElementById('next_section_one').style.display = 'none';
+                document.getElementById('next_section_one').style.display = 'block';
+            });
+
+            document.getElementById('next_button_two').addEventListener('click', function() {
+                document.getElementById('next_section_two').style.display = 'none';
+                document.getElementById('next_section_two').style.display = 'block';
+            });
+
+
+            document.getElementById('next_button_three').addEventListener('click', function() {
+                document.getElementById('next_section_three').style.display = 'none';
+                document.getElementById('next_section_three').style.display = 'block';
+            });
+
+
+            document.getElementById('next_button_four').addEventListener('click', function() {
+                document.getElementById('next_section_four').style.display = 'none';
+                document.getElementById('next_section_four').style.display = 'block';
+            });
+
+
+            document.getElementById('next_button_five').addEventListener('click', function() {
+                document.getElementById('next_section_five').style.display = 'none';
+                document.getElementById('next_section_five').style.display = 'block';
+            });
+
+            document.getElementById('next_button_six').addEventListener('click', function() {
+                document.getElementById('next_section_six').style.display = 'none';
+                document.getElementById('next_section_six').style.display = 'block';
+            });
+
+            document.getElementById('next_button_seven').addEventListener('click', function() {
+                document.getElementById('next_section_seven').style.display = 'none';
+                document.getElementById('next_section_seven').style.display = 'block';
+            });           
+        
+            document.getElementById('passportPhotoInput').addEventListener('change', function() {
+                const passportPhotoInput = this;
+                if (passportPhotoInput.files.length > 0) {
+                    const fileSize = passportPhotoInput.files[0].size; // in bytes
+                    const maxSize = 1000000; // 1MB
+                    if (fileSize > maxSize) {
+                        alert('File size exceeds the limit of 1MB. Please choose a smaller file.');
+                        passportPhotoInput.value = ''; // Clear the file input
+                    }
+                }
+            });
+        </script>
+
+        <script>
+            document.getElementById("company_section").style.display = "none";
+            document.getElementById("individual_section").style.display = "none";
+            document.getElementById("other_select_option").style.display = "none";
+            document.getElementById("sponsorship_section").style.display = "none";
+
+            let individual_fields = ['member_name', 'date_of_birth', 'gender_class', 'mobile_individual', 'member_email', 'country_selection', 'passportPhotoInput', 'current_employer', 'current_position', 'postal_address', 'individual_selection', 'sponsorship_type']
+
+            document.getElementById("member_type_selection").addEventListener("change", function(){
+                if(this.value==="company"){
+                    document.getElementById("company_section").style.display = "block";
+                    document.getElementById("individual_section").style.display = "none";
+
+                    $.each(company_fields, function (i, comp) {
+                        try {document.getElementById(comp).setAttribute('required', '1');} catch (e) {}
+                    });
+
+                    $.each(individual_fields, function (i, ind) {
+                        try {document.getElementById(ind).removeAttribute('required');} catch (e) {}
+                    });
+
+                }else if(this.value=="person"){
+                    document.getElementById("company_section").style.display = "none";
+                    document.getElementById("individual_section").style.display = "block";
+
+                    $.each(individual_fields, function (i, ind) {
+                        try {document.getElementById(ind).setAttribute('required', '1');} catch (e) {}
+                    });
+
+                    $.each(company_fields, function (i, comp) {
+                        try {document.getElementById(comp).removeAttribute('required');} catch (e) {}
+                    });
+
+                }
+            });
+
+            
+
+            document.getElementById("sponsorship_type").addEventListener("change", function(){
+                if(this.value=="company"){
+                document.getElementById("sponsorship_section").style.display = "block";
+                try {document.getElementById("sponsorship_section").setAttribute('required', '1');} catch (e) {}
+            }else{
+                document.getElementById("sponsorship_section").style.display = "none";
+                try {document.getElementById("sponsorship_section").removeAttribute('required');} catch (e) {}
+            }
+            });
+
+            
+
+           
+
+        </script>
+
+    </template>
+
+
+    <record id="membership_thanks" model="website.page">
+        <field name="name">Thanks</field>
+        <field name="type">qweb</field>
+        <field name="url">/unamhe/registration-success</field>
+        <field name="website_published">True</field>
+        <field name="key">unamhe_membership.membership_thanks</field>
+        <field name="arch" type="xml">
+            <t t-call="portal.portal_layout">
+                <div id="wrap">
+                    <div class="container">
+                        <h1>Thanks</h1>
+                        <div class="row">
+                            <div class="col-lg-8">
+                                <div class="alert alert-success" role="status">
+                                    Your Application has been submitted successfully
+                                </div>
+                                <div>
+                                    <t t-esc="partner_name"/>
+                                    <t t-esc="invoice_number"/>
+                                    <t t-esc="total_amount"/>
+                                </div>
+                                <p>
+                                    We'll get back to you shortly 
+                                </p>
+                            </div>
+                        </div>
+                        <div class="row" id="o_recruitment_thank_cta">
+                            <div class="col-lg-12 text-center mt32 mb32">
+                                In the meantime,
+                                <h3 class="mt8 mb32">Look around on our website:</h3>
+                                <a role="button" href="/" class="btn btn-primary btn-lg">Continue To Our Website</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </field>
+    </record>
+
+
+    <template id="unamhe_member_event">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs_searchbar" t-value="True"/>
+            <t t-call="portal.portal_searchbar">
+                <t t-set="title">Events</t>
+            </t>
+
+            <t t-call="portal.portal_table">
+                <div style="padding:15px;background-color: white !important;">
+                    <span class="section_title" style="background-color: white !important">EVENTS</span>
+                </div>
+                <thead>
+                <tr class="active">
+                    <th>Event Name</th>
+                    <th>Start Date</th>
+                    <th>End Date</th>
+                </tr>
+                </thead>
+                <t t-foreach="events" t-as="event">
+                    <tr>
+                        <td>
+                            <a t-attf-href="/event/#{ slug(event) }/#{(not event.menu_id) and 'register'}">
+                                <t t-esc="event.name"/>
+                            </a>
+                        </td>
+                        <td>
+                            <t t-esc="event.date_begin"/>
+                        </td>
+                        <td>
+                            <t t-esc="event.date_end"/>
+                        </td>
+                    </tr>
+                </t>
+            </t>
+        </t>
+    </template>
+
+    <template id="sponsor_membership_applications">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs_searchbar" t-value="True"/>
+            <t t-call="portal.portal_searchbar">
+                <t t-set="title">Applications</t>
+            </t>
+
+            <t t-call="portal.portal_table">
+                <div style="padding:15px;background-color: white !important;">
+                    <span class="section_title"
+                          style="background-color: white !important">Membership Applications</span>
+                </div>
+                <thead>
+                <tr class="active">
+                    <th>Application Number</th>
+                    <th>Applicant Name</th>
+                    <th>Application Date</th>
+                    <th>Application Status</th>
+                    <th>Actions</th>
+                </tr>
+                </thead>
+                <t t-foreach="applications" t-as="application">
+                    <tr>
+                        <td>
+                            <t t-out="application.name"/>
+                        </td>
+                        <td>
+                            <t t-out="application.member_name"/>
+                        </td>
+                        <td>
+                            <t t-out="application.create_date"/>
+                        </td>
+                        <td>
+                            <t t-out="application.state"/>
+                        </td>
+                        <td>
+                            <a href="/unamhe/member-application/approve/?id={{application.id}}">
+                                <button class="btn btn-success btn-sm">Approve</button>
+                            </a> |
+                            <a href="/application/reject/?id={{application.id}}">
+                                <button class="btn btn-danger btn-sm">Reject</button>
+                            </a>
+                        </td>
+                    </tr>
+                </t>
+            </t>
+        </t>
+    </template>
+
+    <template id="my_sponsored_members_list" name="Sponsored Members">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs_searchbar" t-value="True"/>
+            <t t-call="portal.portal_searchbar">
+                <t t-set="title">Sponsored Members</t>
+            </t>
+
+            <t t-call="portal.portal_table">
+                <div style="padding:15px;background-color: white !important;">
+                    <span class="section_title" style="background-color: white !important">Sponsored Members</span>
+                </div>
+                <thead>
+                <tr>
+                    <th>Member Name</th>
+                    <th>Email</th>
+                    <th>MembershipID</th>
+                    <th>Membership Type</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+                </thead>
+                <t t-foreach="sponsored" t-as="member">
+                    <tr>
+                        <td>
+                            <t t-out="member.student.name"/>
+                        </td>
+                        <td>
+                            <t t-out="member.student.email"/>
+                        </td>
+                        <td>
+                            <t t-if="member.student.membership_id">
+                                <t t-out="member.student.membership_id"/>
+                            </t>
+                        </td>
+                        <td>
+                            <t t-if="member.student.product">
+                                <t t-esc="member.student.product.name"/>
+                            </t>
+                        </td>
+                        <td>
+                            <t t-out="member.student.checkMemberStatus()"/>
+                        </td>
+                        <td>
+                            <a t-att-href="'/unamhe/sponsored-activities/%s' % (member.student.id)">
+                                <button class="btn btn-primary btn-sm">View Activities</button>
+                            </a>
+                        </td>
+                    </tr>
+                </t>
+            </t>
+        </t>
+    </template>
+
+    <template id="my_sponsored_member_profile" name="Sponsored Activities">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs_searchbar" t-value="True"/>
+            <t t-call="portal.portal_searchbar">
+                <t t-set="title">SPONSORED ACTIVITIES</t>
+            </t>
+
+            <div class="card" style="margin-top:2px;">
+                <div class="card-body">
+                    <div class="oe_title w-auto" style="padding-top:2px">
+                        <h3 class="section_title"><span t-esc="member.membership_id"/></h3>
+                        <p>
+                            <b t-esc="member.name"/>
+                            <br/>SPONSORED ACTIVITIES
+                        </p>
+                        <hr style="border-bottom: 4px solid #0d095b; padding: 0 0;"/>
+                    </div>
+
+                    <div class="tab-content">
+                        <div class="oe_title w-auto" style="padding-top:2px">
+                            <table class="table rounded mb-0 bg-white">
+                                <thead>
+                                <tr>
+                                    <th>InvoiceID</th>
+                                    <th>Activities</th>
+                                    <th>Invoice Amount</th>
+                                </tr>
+                                </thead>
+                                <t t-foreach="sponsored_activities" t-as="invoice">
+                                    <tr>
+                                        <td>
+                                            <t t-out="invoice.move_id.name"/>
+                                        </td>
+                                        <td>
+                                            <t t-out="invoice.name"/>
+                                        </td>
+                                        <td>
+                                            <t t-out="invoice.currency_id.name"/>
+                                            <t t-out="invoice.price_unit"/>
+                                        </td>
+                                    </tr>
+                                </t>
+                            </table>
+                        </div>
+                        <hr/>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <template id="sponsor_membership_upgrades" name="Membership Upgrades">
+        <t t-call="portal.portal_layout">
+            <t t-call="portal.portal_table">
+                <thead>
+                <tr>
+                    <th>Application Number</th>
+                    <th>Applicant Name</th>
+                    <th>Application Date</th>
+                    <th>Application Status</th>
+                    <th>Status</th>
+                </tr>
+                </thead>
+                <tbody>
+                <t t-foreach="upgrades" t-as="upgrade">
+                    <tr>
+                        <th>
+                                <span>
+                                    <t t-out="upgrade.name"/>
+                                </span>
+                        </th>
+                        <th>
+                                <span>
+                                    <t t-out="upgrade.member_name"/>
+                                </span>
+                        </th>
+                        <th>
+                                <span>
+                                    <t t-out="upgrade.create_date"/>
+                                </span>
+                        </th>
+                        <th>
+                                <span>
+                                    <t t-out="upgrade.state"/>
+                                </span>
+                        </th>
+                        <th>
+                            <div style="border:1px solid;border-radius:5px;color:white;">
+                                <a class="btn btn-success rounded-circle"
+                                   t-attf-href="/unamhe/member-upgrade/approve/?id={{upgrade.id}}">Approve
+                                </a>
+                            </div>
+                            <br/>
+                            <div style="border:1px solid;border-radius:5px;color:white;">
+                                <a class="btn btn-danger rounded-circle"
+                                   t-attf-href="/unamhe/member-upgrades/reject/?id={{upgrade.id}}">Reject
+                                </a>
+                            </div>
+                        </th>
+
+                    </tr>
+                </t>
+                </tbody>
+            </t>
+        </t>
+    </template>
+
+    <template id="sponsor_membership_renewal" name="Membership Upgrades">
+        <t t-call="portal.portal_layout">
+            <t t-call="portal.portal_table">
+                <thead>
+                <tr>
+                    <th>Application Number</th>
+                    <th>Applicant Name</th>
+                    <th>Application Date</th>
+                    <th>Application Status</th>
+                    <th>Status</th>
+                </tr>
+                </thead>
+                <tbody>
+                <t t-foreach="renewal" t-as="renew">
+                    <tr>
+                        <th>
+                                <span>
+                                    <t t-out="renew.name"/>
+                                </span>
+                        </th>
+                        <th>
+                                <span>
+                                    <t t-out="renew.partner_id.name"/>
+                                </span>
+                        </th>
+                        <th>
+                                <span>
+                                    <t t-out="renew.create_date"/>
+                                </span>
+                        </th>
+                        <th>
+                                <span>
+                                    <t t-out="renew.state"/>
+                                </span>
+                        </th>
+                        <th>
+                            <div style="border:1px solid;border-radius:5px;color:white;">
+                                <a class="btn btn-success rounded-circle"
+                                   t-attf-href="/unamhe/member-renew/approve/?id={{renewal.id}}">Approve
+                                </a>
+                            </div>
+                            <br/>
+                            <div style="border:1px solid;border-radius:5px;color:white;">
+                                <a class="btn btn-danger rounded-circle"
+                                   t-attf-href="/unamhe/member-renew/reject/?id={{renewal.id}}">Reject
+                                </a>
+                            </div>
+                        </th>
+
+                    </tr>
+                </t>
+                </tbody>
+            </t>
+        </t>
+    </template>
+
+</odoo>

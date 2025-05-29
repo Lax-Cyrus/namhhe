@@ -1,0 +1,23 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_membership_membership_line_partner_manager,membership.membership_line partner_manager,model_membership_membership_line,base.group_partner_manager,1,1,1,1
+access_membership_membership_line,membership.membership_line,model_membership_membership_line,,1,0,0,0
+access_report_membership,report.membership,model_report_membership,base.group_partner_manager,1,0,0,0
+access_membership_invoice,access.membership.invoice,model_membership_invoice,account.group_account_user,1,1,1,0
+access_op_student_sponsors,op.student.sponsors,model_op_student_sponsors,,1,1,1,1
+access_membership_individual_id_gen,access.membership.individual.id.gen,model_membership_individual_id_gen,account.group_account_user,1,1,1,1
+access_membership_corporate_id_gen,access.membership.corporate.id.gen,model_membership_corporate_id_gen,account.group_account_user,1,1,1,1
+access_unamhe_membership_application,access.unamhe.membership.application,model_unamhe_membership_application,,1,1,1,1
+access_unamhe_membership_upgrade,access.unamhe.membership.upgrade,model_unamhe_membership_upgrade,,1,1,1,1
+access_unamhe_membership_renewal,access.unamhe.membership.renewal,model_unamhe_membership_renewal,,1,1,1,1
+portal_user_event,portal_user_event,event.model_event_event,base.group_portal,1,1,1,0
+portal_user_event_website,portal_user_event_website,website_event.model_event_event,base.group_portal,1,1,1,0
+access.unamhe.membership.application.reject.reason,unamhe_membership_application_reject_reason,model_unamhe_membership_application_reject_reason,,1,1,1,0
+access.unamhe.membership.upgrade.reject.reason,unamhe_membership_upgrade_reject_reason,model_unamhe_membership_upgrade_reject_reason,,1,1,1,0
+access_cpd_point_register,cpd.point.register,model_cpd_point_register,,1,1,1,0
+access_associated_products,associated.products,model_associated_products,,1,1,1,1
+unamhe_membership.access_institute_record,access_institute_record,unamhe_membership.model_institute_record,base.group_user,1,1,1,1
+unamhe_membership.access_employment_record,access_employment_record,unamhe_membership.model_employment_record,base.group_user,1,1,1,1
+unamhe_membership.access_other_professional_organisation,access_other_professional_organisation,unamhe_membership.model_other_professional_organisation,base.group_user,1,1,1,1
+unamhe_membership.access_other_informal_training,access_other_informal_training,unamhe_membership.model_other_informal_training,base.group_user,1,1,1,1
+unamhe_membership.access_unamhe_cities,access_unamhe_cities,unamhe_membership.model_unamhe_cities,base.group_user,1,1,1,1
+unamhe_membership.access_unamhe_district,access_unamhe_district,unamhe_membership.model_unamhe_district,base.group_user,1,1,1,1

@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <template id="my_member_cdp_lager_menu" name="CPD Profile" inherit_id="portal.portal_my_home">
+        <xpath expr="//div[hasclass('o_portal_docs')]" position="inside">
+            <t t-if="user_id.partner_id.company_type == 'person'">
+                <t t-call="portal.portal_docs_entry">
+                    <t t-set="title">CPD Profile</t>
+                    <t t-set="url">/unamhe/cpd-points</t>
+                    <t t-set="placeholder_count" t-value="'cpd_points'"/>
+                </t>
+            </t>
+        </xpath>
+    </template>
+
+    <template id="member_cpd_statement" name="CPD Profile">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs_searchbar" t-value="True"/>
+            <t t-call="portal.portal_searchbar">
+                <t t-set="title">CPD Statement</t></t>
+            <div style="padding:15px;background-color: white !important;">
+                <span class="section_title" style="background-color: white !important">CPD Profile</span>
+                <br/>
+                <a href="/unamhe/cpd-external/register">
+                    <button class="btn btn-success btn-sm">Register External CPDs</button>
+                </a>
+                <a data-toggle="modal" data-target="#cpd-certificate-download" role="menuitem">
+                    <button class="btn btn-warning btn-sm"><i class="fa fa-download"/> Generate CPD Certificate</button>
+                </a>
+            </div>
+            <div class="table-responsive border rounded border-top-0">
+                <table class="table rounded mb-0 bg-white">
+                    <thead>
+                        <tr>
+                            <th>Year</th>
+                            <th>Activity</th>
+                            <th>Activity Organiser</th>
+                            <th>Points Awarded</th>
+                            <th>Activity Type</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <t t-foreach="cpd_points" t-as="point">
+                            <tr>
+                                <td>
+                                    <t t-out="point.year"/>
+                                </td>
+                                <td>
+                                    <t t-out="point.activity"/>
+                                </td>
+                                <td>
+                                    <t t-out="point.activity_organiser"/>
+                                </td>
+                                <td>
+                                    <t t-out="point.points_awarded"/>
+                                </td>
+                                <td>
+                                    <t t-out="point.activity_type"/>
+                                </td>
+                                <td>
+                                    <t t-out="point.status"/>
+                                </td>
+                            </tr>
+                        </t>
+                    </tbody>
+                </table>
+            </div>
+        </t>
+
+        <div class="modal fade" id="cpd-certificate-download" role="dialog">
+            <div class="modal-dialog">
+                <!-- Modal content-->
+                <div class="modal-content">
+                    <form id="cpd-year-form" action="/my/cpd-report/" onsubmit="return setFormAction()">
+                        <div class="modal-header">
+                            <h6 class="modal-title section_title" style="float:left;">Generate CPD Certificate</h6>
+                            <button type="button" style="float:right;" class="close" data-dismiss="modal">x</button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="form-group">
+                                <label for="cpd-year">Year</label>
+                                <input type="text" id="id-cpd-year" required="1" name="cpd-year" class="form-control form-control-sm"/>
+                                <small id="authorisation-number-help" class="form-text text-muted">Enter year and click download button below to generate certificate.</small>
+                                <small id="authorisation-number-help" class="form-text text-muted section_title">When you are done downloading, click X in the top right corner to close the window.</small>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-default btn-sm">Download</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            function setFormAction(){
+                let year = document.getElementById('id-cpd-year').value;
+                let url = `/my/cpd-report/${year}`;
+                try {document.getElementById("cpd-year-form").removeAttribute('action');} catch (e) {}
+                try {document.getElementById("cpd-year-form").setAttribute('action', url);} catch (e) {}
+                return true;
+            }
+        </script>
+
+    </template>
+
+</odoo>

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <template id="member_certificate_template">
+            <t t-call="web.basic_layout">
+                <t t-foreach="docs" t-as="o">
+                    <center>
+                        <div class="page" 
+                             style="border: 5px solid #0b5519; 
+                                    padding: 20px; 
+                                    background-image: url('/unamhe_membership/static/src/img/event_certificate.png'); 
+                                    background-size: cover; 
+                                    background-repeat: no-repeat; 
+                                    background-position: center;">
+                            <br/><br/><br/><br/><br/><br/>
+                            <br/><br/><br/><br/><br/>
+                            
+
+                            <p style="text-align: center;">
+                                <strong style="border-bottom: 2px  width: 300px; text-align: center;">
+                                    <t t-esc="o.name"/>
+                                </strong> 
+                            </p>                
+                            <br/><br/><br/><br/><br/><br/>
+                            <br/><br/><br/><br/>
+                            <div style="text-align: left; margin-top: 20px; padding: 80px;">
+                                <img t-att-src="'/report/barcode/QR/%s' %(o.name)"
+                                    width="50" height="50" 
+                                    alt="QR Code" 
+                                    style="border: 1px solid #000;" />
+                            </div>
+                            
+                            
+                        </div>
+                    </center>
+                </t>
+            </t>
+        </template>
+
+        <record id="paperformat_blue_employee_icard" model="report.paperformat">
+            <field name="name">Member Certificate</field>
+            <field name="default" eval="True"/>
+            <field name="format">custom</field>
+            <field name="page_height">100</field> 
+            <field name="page_width">143</field> 
+            <field name="orientation">Landscape</field> 
+            <field name="margin_top">0</field>
+            <field name="margin_bottom">0</field>
+            <field name="margin_left">0</field>
+            <field name="margin_right">2</field>
+            <field name="header_line" eval="False"/>
+            <field name="header_spacing">40</field>
+            <field name="dpi">90</field>
+        </record>
+    </data>
+</odoo>

@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+        <!-- MEMBERSHIP -->
+
+        <!-- MEMBERSHIP/MEMBERSHIP PRODUCTS -->
+
+        <record model="ir.ui.view" id="unamhe_account_move">
+            <field name="model">account.move</field>
+            <field name="inherit_id" ref="account.view_move_form"/>
+            <field name="arch" type="xml">
+                <field name="partner_id" position="after">
+                    <field name="related_member"/>
+                </field>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="membership_product_search_form_view">
+            <field name="name">membership.product.search.form</field>
+            <field name="model">product.template</field>
+            <field name="priority">50</field>
+            <field name="arch" type="xml">
+                <search string="Membership Levels">
+                    <field name="name" string="Membership Level"/>
+                    <filter string="Inactive" name="inactive" domain="[('active','=',False)]"/>
+                    <field name="categ_id" operator="child_of"/>
+                    <group  expand='0' string='Group by...'>
+                        <filter string='Category' name="category" domain="[]" context="{'group_by' : 'categ_id'}"/>
+                        <filter string='Start Date' name="from_month" domain="[]" context="{'group_by' : 'membership_date_from'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="membership_products_tree">
+            <field name="name">Membership Levels</field>
+            <field name="model">product.template</field>
+            <field name="priority">50</field>
+            <field name="arch" type="xml">
+                <tree string="Membership Levels">
+                    <field name="name"/>
+                    <field name="membership_member_type"/>
+                    <field name="membership_date_from"/>
+                    <field name="membership_date_to"/>
+                    <field name="list_price" string="Membership Fee"/>
+                    <!-- <field name="membership_ranking"/> -->
+                    <!-- <field name="membership_min_cpd_points"/> -->
+                    <field name="categ_id" invisible="1"/>
+                    <field name="uom_id" invisible="1"/>
+                    <field name="type" invisible="1"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="membership_products_kanban" model="ir.ui.view">
+            <field name="name">product.template.kanban</field>
+            <field name="model">product.template</field>
+            <field name="arch" type="xml">
+                <kanban class="o_kanban_mobile">
+                    <field name="name"/>
+                    <field name="membership_member_type"/>
+                    <field name="membership_date_from"/>
+                    <field name="membership_date_to"/>
+                    <field name="list_price"/>
+                    <templates>
+                        <t t-name="kanban-box">
+                            <div t-attf-class="oe_kanban_card oe_kanban_global_click">
+                                <div class="o_kanban_record_top">
+                                    <div class="o_kanban_record_headings">
+                                        <strong class="o_kanban_record_title"><span class="mt4"><field name="name"/></span></strong>
+                                        <div class="mt4"><b>For:</b> <field name="membership_member_type"/></div>
+                                    </div>
+                                    <span class="badge badge-pill"><i class="fa fa-money" role="img" aria-label="Price" title="Price"/> <field name="list_price"/></span>
+                                </div>
+                                <div class="o_kanban_record_body">
+                                    <i class="fa fa-clock-o" role="img" aria-label="Period" title="Period"></i>
+                                    <strong> From: </strong><field name="membership_date_from"/><strong> To:</strong> <field name="membership_date_to"/>
+                                </div>
+                            </div>
+                        </t>
+                    </templates>
+                </kanban>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="membership_products_form">
+            <field name="name">Membership Levels</field>
+            <field name="model">product.template</field>
+            <field name="priority">50</field>
+            <field name="arch" type="xml">
+                <form string="Membership Levels">
+                    <sheet>
+                        <group>
+                            <group>
+                                <field colspan="4" name="name" string="Membership Level"/>
+                            </group>
+                            <group>
+                            </group>
+                        </group>
+                        <group>
+                            <group name="product_details">
+                                <field name="default_code"/>
+                                <field name="categ_id"/>
+                                <field name="membership"/>
+                                <field name="membership_code"/>
+                                <field name="company_id"
+                                    groups="base.group_multi_company"
+                                    options="{'no_create': True}"/>
+                                <field name="active" widget="boolean_toggle"/>
+                                <field name="membership_member_type" string="Member Type"/>
+                            </group>
+                            <group name="membership_details">
+                                <label for="membership_date_from" string="Membership Duration"/>
+                                <div class="o_row">
+                                    <field name="membership_date_from" required="1"/> -
+                                    <field name="membership_date_to" required="1"/>
+                                </div>
+                                <field name="list_price" string="Membership Fee"/>
+                                <field name="property_account_income_id"/>
+                                <field name="taxes_id" widget="many2many_tags" string="Taxes"/>
+                                <!-- <field name="membership_ranking" string="Level Ranking"/> -->
+                                <!-- <field name="membership_min_cpd_points" string="Min CPD Points"/> -->
+                            </group>
+                        </group>
+                        <group name="descriptions">
+                            <field colspan="4" name="description" placeholder="Add a description..."/>
+                            <field colspan="4" name="description_sale" placeholder="This note will be displayed on quotations..."/>
+                        </group>
+                        <group>
+                            <field name="associated_levels" string="Associated Levels">
+                                <tree>
+                                    <field name="membership" invisible="1"/>
+                                    <field name="associated_level" string="Membership levels to which a member under this membership is eligible to upgrade."/>
+                                </tree>
+                            </field>
+                        </group>
+                    </sheet>
+                 </form>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="action_membership_products">
+            <field name="name">Membership Levels</field>
+            <field name="res_model">product.template</field>
+            <field name="domain">[('membership','=',True), ('type', '=', 'service')]</field>
+            <field name="context">{'membership':True, 'type':'service', 'default_membership': True, 'default_detailed_type': 'service'}</field>
+            <field name="search_view_id" ref="membership_product_search_form_view"/>
+        </record>
+
+        <record model="ir.actions.act_window.view" id="action_membership_product_view_tree">
+            <field name="sequence" eval="1"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="membership_products_tree"/>
+            <field name="act_window_id" ref="action_membership_products"/>
+        </record>
+
+        <record model="ir.actions.act_window.view" id="action_membership_product_view_form">
+            <field name="sequence" eval="2"/>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="membership_products_form"/>
+            <field name="act_window_id" ref="action_membership_products"/>
+        </record>
+
+        <record model="ir.actions.act_window.view" id="action_membership_product_view_kanban">
+            <field name="sequence" eval="3"/>
+            <field name="view_mode">kanban</field>
+            <field name="view_id" ref="membership_products_kanban"/>
+            <field name="act_window_id" ref="action_membership_products"/>
+        </record>
+
+        <menuitem name="Membership" id="menu_association" sequence="15" web_icon="unamhe_membership,static/description/icon.png"/>
+        <menuitem name="Configuration" id="menu_marketing_config_association" parent="menu_association" sequence="100"/>
+        <menuitem name="Membership Categories" id="menu_membership_products" parent="menu_marketing_config_association" action="action_membership_products"/>
+        <!-- <menuitem id="menu_location_organisations" name="Organisations" parent="menu_marketing_config_association" action="action_organisations_configure"/>
+        <menuitem id="menu_leadership_configure" name="Leadership Levels" parent="menu_marketing_config_association" action="action_leadership_configure"/>
+        <menuitem id="menu_position_configure" name="Position / Office" parent="menu_marketing_config_association" action="action_position_configure"/>
+        <menuitem id="menu_regime_configure" name="Regime" parent="menu_marketing_config_association" action="action_regime_configure"/>
+        <menuitem id="menu_location_regions" name="Regions" parent="menu_marketing_config_association" action="action_regions"/>
+        <menuitem id="menu_location_province" name="Provinces / Cities" parent="menu_marketing_config_association" action="action_provinces"/>
+        <menuitem id="menu_location_district" name="Districts / Municipalities / Divisions" parent="menu_marketing_config_association" action="action_districts"/>
+        <menuitem id="menu_location_county" name="Counties" parent="menu_marketing_config_association" action="action_counties"/>
+        <menuitem id="menu_location_sub_county" name="Sub-Counties / TownCouncils" parent="menu_marketing_config_association" action="action_sub_counties"/>
+        <menuitem id="menu_location_parish" name="Parishes" parent="menu_marketing_config_association" action="action_parishes"/>
+        <menuitem id="menu_location_village" name="Villages" parent="menu_marketing_config_association" action="action_village"/> -->
+        
+</odoo>

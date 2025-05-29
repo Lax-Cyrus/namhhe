@@ -1,0 +1,901 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <template id="my_members" name="Membership" inherit_id="portal.portal_my_home">
+        <xpath expr="//div[hasclass('o_portal_docs')]" position="inside">
+            <t t-call="portal.portal_docs_entry">
+                <t t-set="title">Membership Profile</t>
+                <t t-set="url">/unamhe/personal-profile</t>
+            </t>
+        </xpath>
+    </template>
+    <template id="my_events" name="Events" inherit_id="portal.portal_my_home">
+        <xpath expr="//div[hasclass('o_portal_docs')]" position="inside">
+            <t t-call="portal.portal_docs_entry">
+                <t t-set="title">Events</t>
+                <t t-set="url">/unamhe/member-events</t>
+                <t t-set="placeholder_count" t-value="'member_events'"/>
+            </t>
+        </xpath>
+    </template>
+
+    <template id="my_members_page" name="Members Page">
+        <t t-call="portal.portal_layout">
+            <t t-call="portal.portal_table">
+                <thead>
+                    <tr>
+                        <th class="text-center">
+                            Member Profile
+                        </th>
+                        <th class="text-center">
+                            Events
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <td>
+                        <a href="/unamhe/personal-profile" style="color:white;padding-top:15px;text-decoration: none;">
+                            <div style="border:1px solid;background-color:orange;border-radius:5px;padding-top:50px;padding-bottom:50px;">
+                                <span>
+                                    <center>View Profile</center>
+                                </span>
+                            </div>
+                        </a>
+                    </td>
+                    <td>
+                        <a href="/unamhe/member-events" style="color:white;padding-top:15px;text-decoration: none;">
+                            <div style="border:1px solid;background-color:orange;border-radius:5px;padding-top:50px;padding-bottom:50px;">
+                                <span>
+                                    <center>View Events</center>
+                                </span>
+                            </div>
+                        </a>
+                    </td>
+                </tbody>
+            </t>
+        </t>
+    </template>
+
+    <template id="member_profile_form_view" name="My Profile">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs_searchbar" t-value="True"/>
+
+            <t t-call="portal.portal_searchbar">
+                <t t-set="title">Member Profile</t>
+            </t>
+
+            <div id="wrap" class="oe_structure oe_empty">
+                <section>
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-lg-4">
+                                <div class="card mb-4">
+                                    <div class="card-body text-center">
+                                        <t t-if="member_img">
+                                            <img t-attf-src="data:image/png;base64,{{member_img}}" alt="avatar" class="rounded-circle img-fluid" style="width: 150px;"/>
+                                        </t>
+                                        <t t-else="">
+                                            <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3.webp" alt="avatar" class="rounded-circle img-fluid" style="width: 150px;"/>
+                                        </t>
+                                        <h5 class="my-3">
+                                            <t t-out="member.name"/>
+                                        </h5>
+                                        <p class="text-muted mb-1">
+                                            <t t-out="member.product.name"/>
+                                        </p>
+                                        <p class="text-muted mb-4">
+                                            <p class="text-muted mb-0">
+                                                <t t-out="member.street"/>
+                                                <br/>
+                                                <t t-out="member.street2"/>
+                                            </p>
+                                        </p>
+                                        <p class="text-muted mb-4">
+                                            <t t-if="member.membership_state">
+                                                <p class="text-muted mb-0">
+                                                    <t t-out="member.membership_id"/>
+                                                </p>
+                                            </t>
+                                        </p>
+                                        <t t-if="member.product">
+                                            <t t-if="member.company_type=='person'">
+                                                <div class="d-flex justify-content-center mb-2">
+                                                    <a href="/unamhe/upgrade-membership">
+                                                        <button style="float:right;" class="btn btn-secondary btn-sm">Upgrade Membership</button>
+                                                    </a>
+                                                    &amp;nbsp;
+                                                    <a t-if="member.checkMemberRenewalStatus()=='INACTIVE'" href="/unamhe/renew-membership">
+                                                        <button style="float:right;" class="btn btn-secondary btn-sm">Renew Membership</button>
+                                                    </a>
+                                                </div>
+                                                <div t-if="member.checkMemberStatus()=='ACTIVE'" class="d-flex justify-content-center mb-2">
+                                                    <a t-att-href="'/ieg/generate_doc/MEMBERSHIP_ID_CARD/%s' % (member.id)">
+                                                        <button style="float:right;" class="btn btn-secondary btn-sm">Download MembershipID</button>
+                                                    </a>
+                                                </div>
+                                            </t>
+                                            <t t-elif="member.company_type=='company'">
+                                                <div class="d-flex justify-content-center mb-2">
+                                                    <a t-if="member.checkMemberRenewalStatus()=='INACTIVE'" href="/unamhe/renew-membership">
+                                                        <button style="float:right;" class="btn btn-secondary btn-sm">Renew Membership</button>
+                                                    </a>
+                                                </div>
+                                                <div t-if="member.checkMemberStatus()=='ACTIVE'" class="d-flex justify-content-center mb-2">
+                                                    <a t-att-href="'/ieg/generate_doc/CORPORATE_MEMBER_CERTIFICATE/%s' % (member.id)">
+                                                        <button style="float:right;" class="btn btn-secondary btn-sm">Download Membership Certificate</button>
+                                                    </a>
+                                                </div>
+                                            </t>
+                                            <div class="d-flex justify-content-center mb-2">
+                                                <a href="/my/account">
+                                                    <button style="float:right;" class="btn btn-primary btn-sm">Edit Profile</button>
+                                                </a>
+                                            </div>
+                                        </t>
+                                        <t t-else="">
+                                            <div class="d-flex justify-content-center mb-2">
+                                                <a href="/unamhe/member-application">
+                                                    <button style="float:right;" class="btn btn-warning btn-sm">Become A Member</button>
+                                                </a>
+                                                &amp;nbsp;
+                                                <a href="/my/account">
+                                                    <button style="float:right;" class="btn btn-primary btn-sm">Edit Profile</button>
+                                                </a>
+                                            </div>
+                                        </t>
+                                    </div>
+                                </div>
+                            </div>
+                            <t t-if="member.company_type=='person'">
+                                <div class="col-lg-8">
+                                    <div class="card mb-4">
+                                        <div class="card-body">
+                                            <div class="row">
+                                                <div class="col-sm-3">
+                                                    <p class="mb-0">Full Name</p>
+                                                </div>
+                                                <div class="col-sm-9">
+                                                    <p class="text-muted mb-0">
+                                                        <t t-out="member.name"/>
+                                                    </p>
+                                                </div>
+                                            </div>
+                                            <hr/>
+                                            <div class="row">
+                                                <div class="col-sm-3">
+                                                    <p class="mb-0">Email</p>
+                                                </div>
+                                                <div class="col-sm-9">
+                                                    <p class="text-muted mb-0">
+                                                        <t t-out="member.email"/>
+                                                    </p>
+                                                </div>
+                                            </div>
+                                            <hr/>
+                                            <div class="row">
+                                                <div class="col-sm-3">
+                                                    <p class="mb-0">Phone</p>
+                                                </div>
+                                                <div class="col-sm-9">
+                                                    <p class="text-muted mb-0">
+                                                        <t t-out="member.phone"/>
+                                                    </p>
+                                                </div>
+                                            </div>
+                                            <hr/>
+                                            <div class="row">
+                                                <div class="col-sm-3">
+                                                    <p class="mb-0">Mobile</p>
+                                                </div>
+                                                <div class="col-sm-9">
+                                                    <p class="text-muted mb-0">
+                                                        <t t-out="member.mobile"/>
+                                                    </p>
+                                                </div>
+                                            </div>
+                                            <hr/>
+                                            <div class="row">
+                                                <div class="col-sm-3">
+                                                    <p class="mb-0">Address</p>
+                                                </div>
+                                                <div class="col-sm-9">
+                                                    <p class="text-muted mb-0">
+                                                        <t t-out="member.street"/>
+                                                        <br/>
+                                                        <t t-out="member.street2"/>
+                                                    </p>
+                                                </div>
+                                            </div>
+                                            <hr/>
+                                            <div class="row">
+                                                <div class="col-sm-3">
+                                                    <p class="mb-0">Membership Type</p>
+                                                </div>
+                                                <t t-if="member.product">
+                                                    <div class="col-sm-9">
+                                                        <p class="text-muted mb-0">Individual Member</p>
+                                                    </div>
+                                                </t>
+                                            </div>
+                                            <hr/>
+                                            <div class="row">
+                                                <div class="col-sm-3">
+                                                    <p class="mb-0">Membership Number</p>
+                                                </div>
+                                                <t t-if="member.product">
+                                                    <div class="col-sm-9">
+                                                        <p class="text-muted mb-0">
+                                                            <t t-out="member.membership_id"/>
+                                                        </p>
+                                                    </div>
+                                                </t>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </t>
+                            <t t-elif="member.company_type=='company'">
+                                <div class="col-lg-8">
+                                    <div class="card mb-4">
+                                        <div class="card-body">
+                                            <div class="row">
+                                                <div class="col-sm-3">
+                                                    <p class="mb-0">Company Name</p>
+                                                </div>
+                                                <div class="col-sm-9">
+                                                    <p class="text-muted mb-0">
+                                                        <t t-out="member.name"/>
+                                                    </p>
+                                                </div>
+                                            </div>
+                                            <hr/>
+                                            <div class="row">
+                                                <div class="col-sm-3">
+                                                    <p class="mb-0">Company Website</p>
+                                                </div>
+                                                <div class="col-sm-9">
+                                                    <p class="text-muted mb-0">
+                                                        <t t-out="member.website"/>
+                                                    </p>
+                                                </div>
+                                            </div>
+                                            <hr/>
+                                            <div class="row">
+                                                <div class="col-sm-3">
+                                                    <p class="mb-0">Company Location</p>
+                                                </div>
+                                                <div class="col-sm-9">
+                                                    <p class="text-muted mb-0">
+                                                        <t t-if="member.street">
+                                                            <t t-out="member.street"/>,
+                                                            <t t-if="member.street2">
+                                                                <t t-out="member.street2"/>
+                                                            </t>
+                                                            <br/>
+                                                        </t>
+                                                        <t t-if="member.city">
+                                                            <t t-out="member.city"/><br/>
+                                                        </t>
+                                                        <t t-if="member.country_id">
+                                                            <t t-out="member.country_id[0].name"/>
+                                                        </t>
+                                                    </p>
+                                                </div>
+                                            </div>
+                                            <hr/>
+                                            <div class="row">
+                                                <div class="col-sm-3">
+                                                    <p class="mb-0">Company Email</p>
+                                                </div>
+                                                <div class="col-sm-9">
+                                                    <p class="text-muted mb-0">
+                                                        <t t-out="member.email"/>
+                                                    </p>
+                                                </div>
+                                            </div>
+                                            <hr/>
+                                            <div class="row">
+                                                <div class="col-sm-3">
+                                                    <p class="mb-0">Company CEO</p>
+                                                </div>
+                                                <div class="col-sm-9">
+                                                    <p class="text-muted mb-0">
+                                                        <t t-out="member.company_ceo"/>
+                                                    </p>
+                                                </div>
+                                            </div>
+                                            <hr/>
+                                            <div class="row">
+                                                <div class="col-sm-3">
+                                                    <p class="mb-0">CEO Number</p>
+                                                </div>
+                                                <div class="col-sm-9">
+                                                    <p class="text-muted mb-0">
+                                                        <t t-out="member.company_ceo_tel"/>
+                                                    </p>
+                                                </div>
+                                            </div>
+                                            <hr/>
+                                            <div class="row">
+                                                <div class="col-sm-3">
+                                                    <p class="mb-0">CEO Email</p>
+                                                </div>
+                                                <div class="col-sm-9">
+                                                    <p class="text-muted mb-0">
+                                                        <t t-out="member.ceo_email"/>
+                                                    </p>
+                                                </div>
+                                            </div>
+                                            <hr/>
+                                            <div class="row">
+                                                <div class="col-sm-3">
+                                                    <p class="mb-0">Company Coordinator</p>
+                                                </div>
+                                                <div class="col-sm-9">
+                                                    <p class="text-muted mb-0">
+                                                        <t t-out="member.company_cordinator"/>
+                                                    </p>
+                                                </div>
+                                            </div>
+                                            <hr/>
+                                            <div class="row">
+                                                <div class="col-sm-3">
+                                                    <p class="mb-0">Coordinator Tel</p>
+                                                </div>
+                                                <div class="col-sm-9">
+                                                    <p class="text-muted mb-0">
+                                                        <t t-out="member.company_cordinator_tel"/>
+                                                    </p>
+                                                </div>
+                                            </div>
+                                            <hr/>
+                                            <div class="row">
+                                                <div class="col-sm-3">
+                                                    <p class="mb-0">Coordinator Email</p>
+                                                </div>
+                                                <div class="col-sm-9">
+                                                    <p class="text-muted mb-0">
+                                                        <t t-out="member.company_cordinator_email"/>
+                                                    </p>
+                                                </div>
+                                            </div>
+                                            <hr/>
+                                            <div class="row">
+                                                <div class="col-sm-3">
+                                                    <p class="mb-0">Membership Type</p>
+                                                </div>
+                                                <t t-if="member.product">
+                                                    <div class="col-sm-9">
+                                                        <p class="text-muted mb-0">Corporate Member
+                                                        </p>
+                                                    </div>
+                                                </t>
+                                            </div>
+                                            <hr/>
+                                            <div class="row">
+                                                <div class="col-sm-3">
+                                                    <p class="mb-0">Membership Number</p>
+                                                </div>
+                                                <t t-if="member.product">
+                                                    <div class="col-sm-9">
+                                                        <p class="text-muted mb-0">
+                                                            <t t-out="member.membership_id"/>
+                                                        </p>
+                                                    </div>
+                                                </t>
+                                            </div>
+                                            <hr/>
+                                            <div class="row">
+                                                <div class="col-sm-3">
+                                                    <p class="mb-0">Organisation Type</p>
+                                                </div>
+                                                <t t-if="member.product">
+                                                    <div class="col-sm-9">
+                                                        <p class="text-muted mb-0">
+                                                            <t t-out="member.organisation_type"/>
+                                                        </p>
+                                                    </div>
+                                                </t>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </t>
+
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </t>
+    </template>
+
+    <template id="member_edit_profile" name="Edit Profile">
+        <t t-call="website.layout">
+            <div id="wrap" class="oe_structure oe_empty">
+                <div class="container">
+                    <section style="margin-top:20px;">
+                        <h2>
+                            <center>Edit Profile</center>
+                        </h2>
+                    </section>
+                    <section>
+                        <table width="100%">
+                            <tr>
+                                <td>
+                                    <form role="form" action="/unamhe/edit-success" method="post"
+                                          enctype="multipart/form-data">
+                                        <section style="margin-top:10px;">
+                                            <input type="hidden" name="csrf_token"
+                                                   t-att-value="request.csrf_token()"/>
+                                        <t t-if="member.member_type=='company'">
+                                            <section>
+                                                <label id="phone_label">Company Name</label>
+                                                <input type="text" id="member_name" class="form-control"
+                                                   name="name" t-att-value="member.name"
+                                                   placeholder="Name"/>
+
+
+                                                <label id="phone_label">Company CEO</label>
+                                                <input type="text" class="form-control" t-att-value="member.company_ceo"
+                                                   name="company_ceo" id="phone_individual" placeholder="CEO"/>
+
+                                                <label id="phone_label">CEO Phone</label>
+                                                <input type="text" class="form-control" t-att-value="member.company_ceo_tel"
+                                                   name="company_ceo_tel" id="phone_individual" placeholder="Phone"/>
+
+                                                <label id="phone_label">Company Coordinator</label>
+                                                <input type="text" class="form-control" t-att-value="member.company_cordinator"
+                                                   name="company_cordinator" id="phone_individual" placeholder="Coordinator"/>
+
+                                                <label id="phone_label">Coordinator Phone</label>
+                                                <input type="text" class="form-control" t-att-value="member.company_cordinator_tel"
+                                                   name="company_cordinator_tel" id="phone_individual" placeholder="Phone Number"/>
+
+                                                <label id="phone_label">Coordinator Email</label>
+                                                <input type="text" class="form-control" t-att-value="member.company_cordinator_email"
+                                                   name="company_cordinator_email" id="phone_individual" placeholder="Email"/>
+                                            </section>
+                                        </t>
+                                            <t t-elif="member.member_type=='person'">
+                                                <section>
+                                                    <label id="individual_name">Name<span style="color:orange">*</span></label>
+
+                                            <input type="text" id="member_name" class="form-control"
+                                                   name="name" t-att-value="member.name"
+                                                   placeholder="Name"/>
+
+                                            <label id="phone_label">Phone</label>
+                                            <input type="text" class="form-control" t-att-value="member.phone"
+                                                   name="phone" id="phone_individual" placeholder="Phone"/>
+
+
+                                            <label id="mobile_label">Mobile</label>
+                                            <input type="tel" class="form-control" t-att-value="member.mobile"
+                                                   name="mobile" id="mobile_individual" placeholder="mobile"/>
+
+                                            <label id="individual_email">Email<span style="color:orange">*</span></label>
+                                            <input type="email" id="member_email" class="form-control"
+                                                   name="email" t-att-value="member.email"
+                                                   placeholder="Email"/>
+
+                                            <label id="marital_status_label">Address</label>
+                                            <input type="input" id="street_addr" class="form-control"
+                                                   name="street" t-att-value="member.street"
+                                                   placeholder="Address"/>
+                                                </section>
+                                            </t>
+
+                                        </section>
+
+                                        <section>
+                                            <div class="from-group col-md-12">
+                                                <button type="submit" class="btn btn-primary mb16 mt16 col-md-12">
+                                                    Edit Profile
+                                                </button>
+                                            </div>
+                                        </section>
+                                    </form>
+                                </td>
+                            </tr>
+                        </table>
+                    </section>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <template id="membership_upgrade_form_view">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs_searchbar" t-value="True"/>
+
+            <t t-call="portal.portal_searchbar">
+                <t t-set="title">Upgrade Membership</t>
+            </t>
+
+            <div id="wrap" class="oe_structure oe_empty">
+                  <div class="container">
+                      <div class="col-md-8">
+                          <form role="form" action="/unamhe/upgrade-membership-success" method="post" enctype="multipart/form-data">
+                              <div class="form-group col-md-12">
+                                  <h3><b>Membership Upgrade</b></h3>
+                                  <div t-if="error" class="alert alert-danger" role="alert">
+                                      <t t-raw="error"/>
+                                  </div>
+                              </div>
+                              <div class="form-group col-md-12">
+                                  <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                  <input type="text" id="member_name" class="form-control" name="member_name" t-att-value="member.name" required="1" placeholder="Name"/>
+                              </div>
+                              <div class="form-group col-md-12">
+                                  <label>Sponsorship Type</label>
+                                  <select name="sponsorship_type" id="sponsorship_type_upgrade" class="form-control link-style" required="1">
+                                      <option value="self">Self Sponsorship</option>
+                                      <option value="company">Company Sponsorship</option>
+                                  </select>
+                              </div>
+                              <div class="form-group col-md-12">
+                                  <label id="sponsors_label_upgrade">Sponsors</label>
+                                  <select id="sponsors_upgrade" name="sponsor" class="form-control link-style">
+                                      <option value=""/>
+                                      <t t-foreach="sponsor" t-as="sp">
+                                          <option t-att-value="sp.id"><t t-esc="sp.name"/></option>
+                                      </t>
+                                  </select>
+                              </div>
+                              <div class="form-group col-md-12">
+                                  <label>Current Employer</label>
+                                  <input type="text" id="current_employer" class="form-control" name="current_employer" t-att-value="member.current_employer" required="1" placeholder="INSURANCE TRAINING COLLEGE"/>
+                              </div>
+                              <div class="form-group col-md-12">
+                                  <label>Current Position</label>
+                                  <input type="text" id="current_position" class="form-control" name="current_position" t-att-value="member.current_position" required="1" placeholder="INSURANCE BROKER"/>
+                              </div>
+                              <div class="form-group col-md-12">
+                                  <label>Postal Address of Employer</label>
+                                  <input type="text" id="employee_address" class="form-control" name="employee_address" required="1" t-att-value="member.employee_address"/>
+                              </div>
+                              <div class="form-group col-md-12">
+                                  <label>Employement History</label>
+                                  <textarea rows="2" id="employement_history" class="form-control" name="employement_history" required="1" t-att-value="member.employee_address"/>
+                              </div>
+                              <div class="form-group col-md-12">
+                                  <label>Insurance Training/Presentation Done in the last Three Years</label>
+                                  <textarea rows="2" id="insurance_training" class="form-control" name="insurance_training" required="1" t-att-value="member.employee_address"/>
+                              </div>
+                              <div class="form-group col-md-12">
+                                  <label>Major unamhe Events Attended</label>
+                                  <textarea rows="2" id="events_attended" class="form-control" name="events_attended" t-att-value="member.employee_address"/>
+                              </div>
+                              <div class="form-group col-md-12">
+                                  <label>Insurance Awards Received</label>
+                                  <textarea rows="2" id="awards_received" class="form-control" name="awards_received" t-att-value="member.employee_address"/>
+                              </div>
+                              <div class="form-group col-md-12">
+                                  <label>Member Type</label>
+                                  <select name="member_type" id="member_type" required="1" class="form-control link-style">
+                                      <option value="person" selected="selected">Individual</option>
+                                  </select>
+                              </div>
+                              <div class="form-group col-md-12">
+                                  <label id="individual_selection_label">Present Membership Category</label>
+                                  <select id="current_product" name="current_product" required="1" class="form-control link-style">
+                                      <option t-att-value="member.product.id" selected="selected">
+                                          <t t-esc="member.product.name"/>
+                                      </option>
+                                  </select>
+                              </div>
+                              <div class="form-group col-md-12">
+                                  <label id="corporate_selection_label">Upgrade To Membership Category</label>
+                                  <select name="product" id="product" required="1" class="form-control link-style">
+                                      <option value=""/>
+                                      <t t-foreach="next_products" t-as="product">
+                                          <t t-if="product.id != member.product.id">
+                                              <option t-att-value="product.id"><t t-esc="product.name"/></option>
+                                          </t>
+                                      </t>
+                                  </select>
+                              </div>
+                              <div class="from-group col-md-12">
+                                  <label>Professional Insurance Documents</label>
+                                  <input type="file" class="form-control" id="olevelDocsInputs" accept="application/pdf" name="academic_documents" required="1" size="5000000"/>
+                              </div>
+                              <div class="form-group col-md-12">
+                                  <label>Other Qualifications</label>
+                                  <input type="file" class="form-control" id="otherQualificationDocumentInput" accept="application/pdf" name="other_academic_documents" size="5000000"/>
+                              </div>
+                              <div class="from-group col-md-12">
+                                  <label>Personal Statement</label>
+                                  <input type="file" class="form-control" id="personalStatementInput" accept="application/pdf" name="personal_statement" required="1" size="2000000"/>
+                              </div>
+                              <div class="from-group col-md-12">
+                                  <button type="submit" class="btn btn-primary mb16 mt16">UPGRADE MEMBERSHIP</button>
+                              </div>
+                          </form>
+                      </div>
+                  </div>
+            </div>
+        </t>
+        <script>
+            try {
+                document.getElementById('olevelDocsInputs').addEventListener('change', function() {
+                    const olevelDocsInputs = this;
+                    if (olevelDocsInputs.files.length > 0) {
+                        const fileSize = olevelDocsInputs.files[0].size; // in bytes
+                        const maxSize = 5000000; // 5MB
+                        if (fileSize > maxSize) {
+                            alert('File size exceeds the limit of 5MB. Please choose a smaller file.');
+                            olevelDocsInputs.value = ''; // Clear the file input
+                        }
+                    }
+                });
+            } catch (e) {}
+            try {
+                document.getElementById('otherQualificationDocumentInput').addEventListener('change', function() {
+                    const otherQualificationDocumentInput = this;
+                    if (otherQualificationDocumentInput.files.length > 0) {
+                        const fileSize = otherQualificationDocumentInput.files[0].size; // in bytes
+                        const maxSize = 5000000; // 5MB
+                        if (fileSize > maxSize) {
+                            alert('File size exceeds the limit of 5MB. Please choose a smaller file.');
+                            otherQualificationDocumentInput.value = ''; // Clear the file input
+                        }
+                    }
+                });
+            } catch (e) {}
+            try {
+                document.getElementById('personalStatementInput').addEventListener('change', function() {
+                    const personalStatementInput = this;
+                    if (personalStatementInput.files.length > 0) {
+                        const fileSize = personalStatementInput.files[0].size; // in bytes
+                        const maxSize = 2000000; // 10MB
+                        if (fileSize > maxSize) {
+                            alert('File size exceeds the limit of 2MB. Please choose a smaller file.');
+                            personalStatementInput.value = ''; // Clear the file input
+                        }
+                    }
+                });
+            } catch (e) {}
+        </script>
+
+        <script>
+            document.getElementById('member_name').readOnly=true;
+            document.getElementById("sponsors_upgrade").style.display = "none";
+            document.getElementById("sponsors_label_upgrade").style.display = "none";
+
+            document.getElementById("sponsorship_type_upgrade").addEventListener("change", function(){
+                if(this.value==="company"){
+                    document.getElementById("sponsors_label_upgrade").style.display = "block";
+                    document.getElementById("sponsors_upgrade").style.display = "block";
+                    try {document.getElementById("sponsors_upgrade").setAttribute('required', '1');} catch (e) {}
+                }else{
+                    document.getElementById("sponsors_label_upgrade").style.display = "none";
+                    document.getElementById("sponsors_upgrade").style.display = "none";}
+                    try {document.getElementById("sponsors_upgrade").removeAttribute('required');} catch (e) {}
+                });
+
+            document.getElementById("company_selection").addEventListener("change", function(){
+            if(this.value==="company"){
+            document.getElementById("individual_selection_label").style.display = "none";
+            document.getElementById("individual_selection").style.display = "none";
+            document.getElementById("corporate_selection_label").style.display = "block";
+            document.getElementById("corporate_selection").style.display = "block";
+            }else if(this.value==="person"){
+            document.getElementById("corporate_selection_label").style.display = "none";
+            document.getElementById("corporate_selection").style.display = "none";
+            document.getElementById("individual_selection_label").style.display = "block";
+            document.getElementById("individual_selection").style.display = "block";
+            }
+            });
+
+        </script>
+    </template>
+
+    <template id="member_renew_template">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs_searchbar" t-value="True"/>
+
+            <t t-call="portal.portal_searchbar">
+                <t t-set="title">Upgrade Membership</t>
+            </t>
+
+            <div id="wrap" class="oe_structure oe_empty">
+                  <div class="container">
+                      <div class="col-md-8">
+                          <t t-if="member.company_type=='person'">
+                              <form role="form" action="/unamhe/renew-membership-success" method="post" enctype="multipart/form-data">
+                                  <div class="form-group col-md-12">
+                                      <h3><b>Membership Renewal Form</b></h3>
+                                      <div t-if="error" class="alert alert-danger" role="alert">
+                                          <t t-raw="error"/>
+                                      </div>
+                                  </div>
+                                  <div class="form-group col-md-12">
+                                      <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                      <label id="individual_selection_label">Present Membership Category</label>
+                                      <select id="individual_selection" name="product" class="form-control link-style">
+                                          <option t-att-value="member.product.id">
+                                              <t t-esc="member.product.name"/>
+                                          </option>
+                                      </select>
+                                  </div>
+                                  <div class="form-group col-md-12">
+                                      <label id="individual_selection_label">Renewal for [Year]</label>
+                                      <input type="text" id="year" class="form-control" name="year" t-att-value="renewal_year" required="1" readonly="true"/>
+                                  </div>
+                                  <div class="form-group col-md-12">
+                                      <label>Sponsorship Type</label>
+                                      <select name="sponsorship_type" id="sponsorship_type_renewal" class="form-control link-style">
+                                          <option value=""/>
+                                          <option value="self">Self Sponsorship</option>
+                                          <option value="company">Company Sponsorship</option>
+                                      </select>
+                                  </div>
+                                  <div class="form-group col-md-12">
+                                      <label id="sponsors_label_renewal">Sponsors</label>
+                                      <select id="sponsors_renewal" name="sponsor" class="form-control link-style">
+                                          <option value=""/>
+                                          <t t-foreach="sponsor" t-as="sp">
+                                              <option t-att-value="sp.id">
+                                                  <t t-esc="sp.name"/>
+                                              </option>
+                                          </t>
+                                      </select>
+                                  </div>
+                                  <div class="form-group col-md-12">
+                                      <button type="submit" class="btn btn-primary mb16 mt16 col-md-12">RENEW MEMBERSHIP</button>
+                                  </div>
+                              </form>
+                          </t>
+                          <t t-else="">
+                              <form role="form" action="/unamhe/renew-membership-success" method="post" enctype="multipart/form-data">
+                                  <div class="form-group col-md-12">
+                                      <h3><b>Membership Renewal Form</b></h3>
+                                      <div t-if="error" class="alert alert-danger" role="alert">
+                                          <t t-raw="error"/>
+                                      </div>
+                                  </div>
+                                  <div class="form-group col-md-12">
+                                      <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                      <label id="individual_selection_label">Present Membership Category</label>
+                                      <select id="individual_selection_corp" name="product" class="form-control link-style">
+                                          <option t-att-value="member.product.id">
+                                              <t t-esc="member.product.name"/>
+                                          </option>
+                                      </select>
+                                  </div>
+                                  <div class="form-group col-md-12">
+                                      <label id="individual_selection_label">Renewal for [Year]</label>
+                                      <input type="text" id="year" class="form-control" name="year" t-att-value="renewal_year" required="1" readonly="true"/>
+                                  </div>
+                                  <div class="form-group col-md-12">
+                                      <button type="submit" class="btn btn-primary mb16 mt16 col-md-12">RENEW MEMBERSHIP</button>
+                                  </div>
+                              </form>
+                          </t>
+                      </div>
+                  </div>
+            </div>
+        </t>
+
+        <script>
+
+            document.getElementById("sponsors_label_renewal").style.display = "none";
+            document.getElementById("sponsors_renewal").style.display = "none";
+
+            document.getElementById("sponsorship_type_renewal").addEventListener("change", function(){
+            if(this.value==="company"){
+            document.getElementById("sponsors_label_renewal").style.display = "block";
+            document.getElementById("sponsors_renewal").style.display = "block";
+            }else{
+            document.getElementById("sponsors_label_renewal").style.display = "none";
+            document.getElementById("sponsors_renewal").style.display = "none";
+            }
+            });
+
+        </script>
+    </template>
+
+    <record id="memberupgradesuccess" model="website.page">
+        <field name="name">Thanks</field>
+        <field name="type">qweb</field>
+        <field name="url">/unamhe/upgrade-membership-success</field>
+        <field name="website_published">True</field>
+        <field name="key">unamhe_membership.memberupgradesuccess</field>
+        <field name="arch" type="xml">
+            <t t-call="website.layout">
+                <div id="wrap">
+                    <div class="container">
+                        <h1>Thanks</h1>
+                        <div class="row">
+                            <div class="col-lg-8">
+                                <div class="alert alert-success" role="status">
+                                    Your Upgraded has been submitted successfully
+                                </div>
+                                <p>
+                                    We'll get back to you shortly
+                                </p>
+                            </div>
+                        </div>
+                        <div class="row" id="o_recruitment_thank_cta">
+                            <div class="col-lg-12 text-center mt32 mb32">
+                                In the meantime,
+                                <h3 class="mt8 mb32">Look around on our website:</h3>
+                                <a role="button" href="/" class="btn btn-primary btn-lg">Continue To Our Website</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </field>
+    </record>
+
+    <template id="external_cpd_registration_form_view">
+    <t t-call="portal.portal_layout">
+        <t t-set="breadcrumbs_searchbar" t-value="True"/>
+
+        <t t-call="portal.portal_searchbar">
+            <t t-set="title">External CPD Activity/Event Registration</t>
+        </t>
+
+        <div id="wrap" class="oe_structure oe_empty">
+              <div class="container">
+                  <div class="col-md-8">
+                      <form role="form" action="/unamhe/external-cpd-registration" method="post" enctype="multipart/form-data">
+                          <div class="form-group col-md-12">
+                              <h3><b>External CPD Activity/Event Registration</b></h3>
+                              <div t-if="error" class="alert alert-danger" role="alert">
+                                  <t t-raw="error"/>
+                              </div>
+                          </div>
+                          <div class="form-group col-md-12">
+                              <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                              <input type="text" id="member_name" class="form-control" name="member_name" t-att-value="member.name" required="required" disabled="1"/>
+                          </div>
+                          <div class="form-group col-md-12">
+                              <label>Activity date</label>
+                              <input type="date" id="activity_date" class="form-control" name="activity_date" t-att-value="activity_date" required="required"/>
+                          </div>
+                          <div class="form-group col-md-12">
+                              <label>CPD activity/event</label>
+                              <textarea rows="3" id="activity" class="form-control" name="activity" required="required"/>
+                          </div>
+                          <div class="form-group col-md-12">
+                              <label>CPD activity/event organiser</label>
+                              <input type="text" id="activity_organiser" class="form-control" name="activity_organiser" required="required"/>
+                          </div>
+                          <div class="form-group col-md-12">
+                              <label>Is activity unamhe Accredited?</label>
+                              <select id="unamhe_accredited" name="unamhe_accredited" class="form-control" required="required">
+                                  <option value=""/>
+                                  <option value="YES">YES</option>
+                                  <option value="NO">NO</option>
+                              </select>
+                          </div>
+                          <div class="form-group col-md-12">
+                              <label>Certificate of Attendance</label>
+                              <input type="file" class="form-control" id="certificateInput" accept="application/pdf" name="certificate" required="required" size="2000000"/>
+                          </div>
+                          <div class="from-group col-md-12">
+                              <button type="submit" class="btn btn-primary mb16 mt16">Submit Activity</button>
+                          </div>
+                      </form>
+                  </div>
+              </div>
+        </div>
+    </t>
+    <script>
+        document.getElementById('certificateInput').addEventListener('change', function() {
+            const certificateInput = this;
+            if (certificateInput.files.length > 0) {
+                const fileSize = certificateInput.files[0].size; // in bytes
+                const maxSize = 2000000; // 2MB
+                if (fileSize > maxSize) {
+                    alert('File size exceeds the limit of 2MB. Please choose a smaller file.');
+                    certificateInput.value = ''; // Clear the file input
+                }
+            }
+        });
+    </script>
+</template>
+
+</odoo>

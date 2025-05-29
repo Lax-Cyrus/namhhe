@@ -1,0 +1,374 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- MEMBERSHIP/CURRENT MEMBERS -->
+
+    <record model="ir.ui.view" id="membership_members_tree">
+        <field name="name">Members</field>
+        <field name="model">res.partner</field>
+        <field name="arch" type="xml">
+            <tree string="Members">
+                <field name="membership_id"/>
+                <field name="name"/>
+                <field name="is_company"/>
+                <field name="gender"/>
+                <field name="date_of_birth"/>
+                <field name="email"/>
+                <field name="mobile"/>
+                <field name="membership_state"/>
+                <field name="membership_start"/>
+                <field name="membership_stop"/>
+                <field name="user_id" invisible="1"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Member Kanban View -->
+    <record model="ir.ui.view" id="membership_members_kanban_view">
+        <field name="name">res.partner.kanban</field>
+        <field name="model">res.partner</field>
+        <field name="arch" type="xml">
+            <kanban class="o_res_partner_kanban" sample="1">
+                <field name="id"/>
+                <field name="color"/>
+                <field name="display_name"/>
+                <field name="title"/>
+                <field name="membership_id"/>
+                <field name="email"/>
+                <field name="parent_id"/>
+                <field name="is_company"/>
+                <field name="gender"/>
+                <field name="date_of_birth"/>
+                <field name="function"/>
+                <field name="phone"/>
+                <field name="street"/>
+                <field name="street2"/>
+                <field name="zip"/>
+                <field name="city"/>
+                <field name="country_id"/>
+                <field name="mobile"/>
+                <field name="state_id"/>
+                <field name="category_id"/>
+                <field name="avatar_128"/>
+                <field name="type"/>
+                <field name="membership_state"/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div class="oe_kanban_global_click o_kanban_record_has_image_fill o_res_partner_kanban">
+                            <t t-if="!record.is_company.raw_value">
+                                <t t-set="background_image"
+                                   t-value="kanban_image('res.partner', 'avatar_128', record.id.raw_value)"/>
+                                <div class="o_kanban_image_fill_left d-none d-md-block"
+                                     t-attf-style="background-image:url('#{background_image}')">
+                                    <img class="o_kanban_image_inner_pic" t-if="record.parent_id.raw_value"
+                                         t-att-alt="record.parent_id.value"
+                                         t-att-src="kanban_image('res.partner', 'avatar_128', record.parent_id.raw_value)"/>
+                                </div>
+                                <div class="o_kanban_image d-md-none"
+                                     t-attf-style="background-image: url(#{background_image})">
+                                    <img class="o_kanban_image_inner_pic" t-if="record.parent_id.raw_value"
+                                         t-att-alt="record.parent_id.value"
+                                         t-att-src="kanban_image('res.partner', 'avatar_128', record.parent_id.raw_value)"/>
+                                </div>
+                            </t>
+                            <t t-else="">
+                                <div class="o_kanban_image_fill_left o_kanban_image_full"
+                                     t-attf-style="background-image: url(#{kanban_image('res.partner', 'avatar_128', record.id.raw_value)})"
+                                     role="img"/>
+                            </t>
+                            <div class="oe_kanban_details d-flex flex-column">
+                                <strong class="o_kanban_record_title oe_partner_heading">
+                                    <field name="display_name"/>
+                                </strong>
+                                <div>
+                                    <field name="membership_id"/>
+                                </div>
+                                <div class="o_kanban_tags_section oe_kanban_partner_categories"/>
+                                <ul>
+                                    <li t-if="record.membership_state.raw_value">
+                                        <b>Membership Status:</b>
+                                        <field name="membership_state"/>
+                                    </li>
+                                    <li>
+                                        <b>Membership type:</b>
+                                        <field name="company_type"/>
+                                    </li>
+                                    <li t-if="record.parent_id.raw_value and !record.function.raw_value">
+                                        <field name="parent_id"/>
+                                    </li>
+                                    <li t-if="!record.parent_id.raw_value and record.function.raw_value">
+                                        <field name="function"/>
+                                    </li>
+                                    <li t-if="record.parent_id.raw_value and record.function.raw_value">
+                                        <field name="function"/>
+                                        at
+                                        <field name="parent_id"/>
+                                    </li>
+                                    <li t-if="record.city.raw_value or record.country_id.raw_value">
+                                        <t t-if="record.city.raw_value">
+                                            <field name="city"/>
+                                            <t t-if="record.country_id.raw_value">,</t>
+                                        </t>
+                                        <t t-if="record.country_id.raw_value">
+                                            <field name="country_id"/>
+                                        </t>
+                                    </li>
+                                    <li t-if="record.email.raw_value">
+                                        <field name="email"/>
+                                    </li>
+                                    <t t-if="record.mobile.raw_value">
+                                        <li><field name="mobile"/></li>
+                                    </t>
+                                    <t t-elif="record.phone.raw_value">
+                                        <li><field name="phone"/></li>
+                                    </t>
+                                </ul>
+                                <div class="o_row">
+                                    <span class="oe_kanban_partner_links"/>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <record id="view_res_partner_member_filter" model="ir.ui.view">
+        <field name="name">res.partner.select</field>
+        <field name="model">res.partner</field>
+        <field name="priority">50</field>
+        <field name="arch" type="xml">
+            <search string="Membership Partners">
+                <field name="name" filter_domain="['|', '|', ('name', 'ilike', self), ('parent_id', 'ilike', self), ('ref' , '=', self)]"/>
+                <field name="category_id"/>
+                <field name="membership_start" invisible="1"/>
+                <field name="membership_stop" string="End Membership Date"/>
+                <filter name="customer" string="Customers" domain="[('customer_rank' ,'>', 0)]"/>
+                <filter name="supplier" string="Vendors" domain="[('supplier_rank', '>', 0)]"/>
+                <separator/>
+                <filter name="all_members" string="Active Members" domain="[('membership_state', 'in', ['invoiced', 'paid', 'active'])]" help="Invoiced/Paid"/>
+                <separator/>
+                <filter string="Start Date" name="start_date" date="membership_start"/>
+                <filter string="End Date" name="end_date" date="membership_stop"/>
+                <group expand="0" string="Group By" colspan="10" col="8">
+                    <filter string="Salesperson" name="salesperson" domain="[]" context="{'group_by' : 'user_id'}"/>
+                    <filter string="Membership State" name="membership_state" domain="[]"
+                            context="{'group_by': 'membership_state'}"/>
+                    <filter string="Start Date" name="start_month" help="Starting Date Of Membership" domain="[]"
+                            context="{'group_by': 'membership_start'}"/>
+                    <filter string="End Date" name="end_month" help="Ending Date Of Membership" domain="[]"
+                            context="{'group_by': 'membership_stop'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="seq_res_partner_membership" model="ir.sequence">
+        <field name="name">Membership Number</field>
+        <field name="code">res.partner</field>
+        <field name="prefix">unamhe-M-</field>
+        <field name="padding">4</field>
+        <field name="company_id" eval="False"/>
+    </record>
+
+    <record model="ir.actions.act_window" id="action_membership_members">
+        <field name="name">Members</field>
+        <field name="res_model">res.partner</field>
+        <field name="view_mode">kanban,tree,form,activity</field>
+        <field name="domain">[('member','=',True)]</field>
+        <field name="search_view_id" ref="view_res_partner_member_filter"/>
+        <field name="context">{"search_default_all_members": 1, "default_membership_state": 'paid', "default_member": True}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Add a new member
+            </p>
+            <p>
+                Easily track all activities related to a member:
+                Current Membership Status, Discussions and History of Membership, etc.
+            </p>
+        </field>
+    </record>
+
+    <!-- PARTNERS -->
+
+    <record model="ir.ui.view" id="view_partner_tree">
+        <field name="name">res.partner.tree.form.inherit</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_tree"/>
+        <field name="arch" type="xml">
+            <field name="category_id" position="after">
+                <field name="membership_state" optional="hide"/>
+            </field>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="view_partner_membership_form">
+        <field name="name">res.partner.member.form</field>
+        <field name="model">res.partner</field>
+        <field name="priority" eval="8"/>
+        <field name="arch" type="xml">
+            <form string="Membership Form">
+                <header>                    
+                    <button invisible="company_type != 'person'" name="printMembershipID" class="btn btn-primary btn-sm" string="Print MembershipID" type="object"/>
+                    <button invisible="company_type != 'person'" name="print_member_certificate" class="btn btn-primary btn-sm" string="Print Member Certificate" type="object"/>
+                    <button name="action_activate_member" type="object" string="Activate Member" class="oe_highlight"/>
+
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box"/>
+                    <field name="image_1920" widget="image" class="oe_avatar" invisible="company_type != 'person'"/>
+                    <div class="oe_title">
+                        <field name="is_company" invisible="1"/>
+                        <field name="commercial_partner_id" invisible="1"/>
+                        <field name="active" invisible="1"/>
+                        <field name="member" invisible="1"/>
+                        <field name="country_code" invisible="1"/>
+                        <field name="company_type" widget="radio" options="{'horizontal': true}"/>
+                        <h1>
+                            <field id="company" class="text-break" name="name" default_focus="1" placeholder="e.g. Lumber Inc" required="type == 'contact' and is_company" invisible="not is_company"/>
+                            <field id="individual" class="text-break" name="name" default_focus="1" placeholder="e.g. Brandom Freeman" required="type == 'contact' and not is_company" invisible="is_company"/>
+                        </h1>
+                        <div class="o_row">
+                            <field name="parent_id" widget="res_partner_many2one" placeholder="Company Name..." domain="[('is_company', '=', True)]" context="{'default_is_company': True, 'show_vat': True}" invisible="is_company and not (parent_id or company_name)"/>
+                            <field name="company_name" invisible="not (company_name or is_company)"/>
+                            <button name="create_company" icon="fa-plus-square" string="Create company" type="object" class="oe_edit_only btn-link" invisible="is_company or not company_name"/>
+                        </div>
+                    </div>
+
+                    <group>
+                        <group>
+                            <span class="o_form_label o_td_label" name="address_name">
+                                <field name="type"
+                                    class="font-weight-bold"/>
+                                <b invisible="[('is_company', '=', False)]">Address</b>
+                            </span>
+                            <div class="o_address_format">
+                                <field name="street" placeholder="Street..." class="o_address_street"
+                                       readonly="type == 'contact' and parent_id != False"/>
+                                <field name="street2" placeholder="Street 2..." class="o_address_street"
+                                       readonly="type == 'contact' and parent_id != False"/>
+                                <field name="city" placeholder="City" class="o_address_city"
+                                       readonly="type == 'contact' and parent_id != False"/>
+                                <field name="state_id" class="o_address_state" placeholder="State"
+                                       options="{'no_open': True, 'no_quick_create': True}"
+                                       readonly="type == 'contact' and parent_id != False"
+                                       context="{'country_id': country_id, 'default_country_id': country_id, 'zip': zip}"/>
+                                <field name="zip" placeholder="ZIP" class="o_address_zip"
+                                       readonly="type == 'contact' and parent_id != False"
+                                    />
+                                <field name="country_id" placeholder="Country" class="o_address_country"
+                                       options="{&quot;no_open&quot;: True, &quot;no_create&quot;: True}"
+                                       readonly="type == 'contact' and parent_id != False"/>
+                            </div>
+                            <field name="email" widget="email" context="{'gravatar_image': True}" required="user_ids"/>
+                            <field name="membership_id" string="MembershipID" invisible="is_company"/>
+                        </group>
+                        <group>
+                            <field name="date_of_birth" invisible="is_company"/>
+                            <field name="gender" invisible="is_company"/>
+                            <field name="organisation_type" invisible="not is_company"/>
+                            <field name="phone" widget="phone"/>
+                            <field name="mobile" widget="phone" invisible="is_company"/>
+                            <field name="user_ids" invisible="1"/>
+                            <field name="website" string="Website" widget="url" placeholder="e.g. https://www.odoo.com" invisible="not is_company"/>
+                            <field name="active_lang_count" invisible="1"/>
+                            <label for="lang" invisible="[('active_lang_count', '&lt;=', 1)]"/>
+                            <div class="o_row" invisible="[('active_lang_count', '&lt;=', 1)]">
+                                <field name="lang"/>
+                                <button type="action" name="56" class="btn-sm btn-link mb4 fa fa-globe" aria-label="More languages" groups="base.group_system" title="More languages"/>
+                            </div>
+                            <field name="religion" invisible="is_company"/>
+                            <field name="marital_status" invisible="is_company"/>
+                            <field name="membership_id" string="MembershipID" invisible="not is_company"/>
+                        </group>
+                    </group>
+
+                   
+
+                    <notebook position="inside">
+                        
+                        <page string="Membership" name="membership">
+                            <group>
+                                <group>
+                                    <field string="Membership Status" name="membership_state" readonly="1"/>
+                                    <field name="membership_start" invisible="[('membership_start','=',False)]"/>
+                                </group>
+                                <group>
+                                    <field name="product" string="Membership Type"/>
+                                    <field name="membership_stop" invisible="[('membership_stop','=',False)]"/>
+                                    <field name="membership_cancel" invisible="[('membership_cancel','=',False)]"/>
+                                </group>
+                            </group>
+                            <field name="product_price" invisible="1"/>
+                            <field name="online_creation" invisible="1"/>
+                            <field name="member_lines" readonly="1">
+                                <tree string="Memberships" readonly="1">
+                                    <field name="date"/>
+                                    <field name="membership_id"/>
+                                    <field name="member_price"/>
+                                    <field name="account_invoice_id" invisible="1"/>
+                                    <field name="date_from"/>
+                                    <field name="date_to"/>
+                                    <field name="state"/>
+                                    <field name="account_invoice_id" string="Ref Invoice"/>
+                                </tree>
+                                <form string="Memberships">
+                                    <group>
+                                        <group>
+                                            <field name="membership_id"/>
+                                            <field name="date_from"/>
+                                            <field name="state"/>
+                                        </group>
+                                        <group>
+                                            <field name="date"/>
+                                            <field name="date_to"/>
+                                            <field name="member_price"/>
+                                            <field name="account_invoice_id" context="{'form_view_ref': 'account.view_move_form'}"/>
+                                        </group>
+                                    </group>
+                                </form>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record model="ir.actions.act_window.view" id="action_membership_members_view_tree">
+        <field name="sequence" eval="2"/>
+        <field name="view_mode">tree</field>
+        <field name="view_id" ref="membership_members_tree"/>
+        <field name="act_window_id" ref="action_membership_members"/>
+    </record>
+
+    <record model="ir.actions.act_window.view" id="action_membership_members_view_form">
+        <field name="sequence" eval="3"/>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="view_partner_membership_form"/>
+        <field name="act_window_id" ref="action_membership_members"/>
+    </record>
+
+    <record model="ir.actions.act_window.view" id="action_membership_members_view_kanban">
+        <field name="sequence" eval="1"/>
+        <field name="view_mode">kanban</field>
+        <field name="view_id" ref="membership_members_kanban_view"/>
+        <field name="act_window_id" ref="action_membership_members"/>
+    </record>
+
+    <menuitem name="Members" id="menu_membership" sequence="0" parent="menu_association" action="action_membership_members"/>
+
+    <data noupdate="1">
+        <record id="ir_cron_scheduler_expire_old_membership" model="ir.cron">
+            <field name="name">unamhe Membership: expire old membership</field>
+            <field name="model_id" ref="model_membership_membership_line"/>
+            <field name="state">code</field>
+            <field name="code">model.scheduled_action_expire_old_membership()</field>
+            <field name="user_id" ref="base.user_root"/>
+            <field name="interval_number">1</field>
+            <field name="interval_type">months</field>
+            <field name="numbercall">-1</field>
+        </record>
+  </data>
+</odoo>
